@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ff6a3d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>好评文案生成器</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#f5f6f8;--card:#fff;--fg:#1a1c20;--muted:#6b7280;--line:#e6e8ec;
+  --chip:#f1f3f6;--chip-on:#fff0ea;--brand:#ff6a3d;--brand2:#ff9166;
+  --shadow:0 1px 2px rgba(16,24,40,.04),0 8px 24px rgba(16,24,40,.06);
+  --r:16px;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#101116;--card:#1a1c22;--fg:#eceef2;--muted:#98a0ad;--line:#292d35;
+  --chip:#23262d;--chip-on:#3b2418;--shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35)}
+}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg);color:var(--fg);
+  font:16px/1.6 -apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  padding:0 0 calc(24px + env(safe-area-inset-bottom));
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:660px;margin:0 auto;padding:0 14px}
+header{padding:26px 0 14px;text-align:center}
+header h1{margin:0;font-size:23px;letter-spacing:.5px}
+header p{margin:6px 0 0;color:var(--muted);font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
+.row{margin-bottom:16px}
+.row:last-child{margin-bottom:0}
+.lab{font-size:13px;font-weight:600;color:var(--muted);margin-bottom:9px;display:flex;align-items:center;gap:6px}
+.lab .opt{font-weight:400;color:var(--muted);opacity:.7}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{
+  border:1px solid var(--line);background:var(--chip);color:var(--fg);
+  border-radius:999px;padding:9px 14px;font-size:14px;line-height:1;
+  cursor:pointer;user-select:none;transition:.15s;font-family:inherit;font-weight:500;
+}
+.chip:active{transform:scale(.96)}
+.chip.on{background:var(--chip-on);border-color:var(--brand);color:var(--brand);font-weight:700}
+input[type=text],textarea{
+  width:100%;background:var(--chip);border:1px solid var(--line);color:var(--fg);
+  border-radius:12px;padding:12px 14px;font-size:16px;font-family:inherit;outline:none;
+}
+input[type=text]:focus,textarea:focus{border-color:var(--brand);background:var(--card)}
+textarea{resize:vertical;min-height:62px;line-height:1.5}
+.actions{display:flex;gap:10px;margin:2px 0 18px}
+.btn{
+  border:0;border-radius:14px;font-size:16px;font-weight:700;font-family:inherit;
+  padding:15px 18px;cursor:pointer;transition:.15s;flex:1;min-height:52px;
+}
+.btn:active{transform:scale(.98)}
+.btn.p{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;box-shadow:0 6px 18px rgba(255,106,61,.3);flex:2}
+.btn.g{background:var(--chip);color:var(--fg);border:1px solid var(--line)}
+.results{display:flex;flex-direction:column;gap:12px}
+.res{position:relative;padding:16px}
+.res .txt{margin:0;white-space:pre-wrap;word-break:break-word;font-size:16px;line-height:1.85}
+.res .foot{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)}
+.res .len{font-size:12px;color:var(--muted)}
+.cp{
+  border:1px solid var(--brand);color:var(--brand);background:transparent;
+  border-radius:10px;padding:8px 16px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;
+}
+.cp:active{background:var(--chip-on)}
+.cp.done{background:var(--brand);color:#fff;border-color:var(--brand)}
+.empty{color:var(--muted);text-align:center;padding:26px 10px;font-size:14px;line-height:1.9}
+.tip{color:var(--muted);font-size:12.5px;text-align:center;line-height:1.9;padding:4px 10px 22px}
+#toast{
+  position:fixed;left:50%;bottom:calc(30px + env(safe-area-inset-bottom));transform:translate(-50%,16px);
+  background:rgba(20,22,26,.92);color:#fff;padding:11px 20px;border-radius:999px;font-size:14px;
+  opacity:0;pointer-events:none;transition:.22s;z-index:99;backdrop-filter:blur(6px);
+}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+.badge{display:inline-block;background:var(--chip-on);color:var(--brand);font-size:11px;font-weight:700;border-radius:6px;padding:2px 7px;margin-left:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>⭐ 好评文案生成器</h1>
+    <p>选好标签，一键生成自然的好评文案</p>
+  </header>
+
+  <div class="card">
+    <div class="row">
+      <div class="lab">店铺 / 商品名称 <span class="opt">选填</span></div>
+      <input type="text" id="name" placeholder="例如：XX火锅（中山路店）" autocomplete="off">
+    </div>
+
+    <div class="row">
+      <div class="lab">行业类型</div>
+      <div class="chips" id="cats"></div>
+    </div>
+
+    <div class="row">
+      <div class="lab">想夸的点 <span class="opt">可多选</span></div>
+      <div class="chips" id="tags"></div>
+    </div>
+
+    <div class="row">
+      <div class="lab">语气风格</div>
+      <div class="chips" id="styles"></div>
+    </div>
+
+    <div class="row">
+      <div class="lab">文案长度</div>
+      <div class="chips" id="lens"></div>
+    </div>
+
+    <div class="row">
+      <div class="lab">推荐力度</div>
+      <div class="chips" id="powers"></div>
+    </div>
+
+    <div class="row">
+      <div class="lab">补充真实细节 <span class="opt">选填，会织进文案</span></div>
+      <textarea id="detail" placeholder="例如：点了双人套餐／做的奶茶三分糖／第二次来了"></textarea>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn g" id="reroll">换一批</button>
+    <button class="btn p" id="gen">生成好评</button>
+  </div>
+
+  <div class="results" id="out">
+    <div class="card empty" id="empty">点「生成好评」，立刻出 3 条候选文案 👆</div>
+  </div>
+
+  <div class="tip">
+    生成的文案可自由修改 · 加上自己的真实细节会更自然<br>
+    把链接发到微信 / 群聊 / 打印成二维码，别人用手机也能直接打开
+  </div>
+</div>
+<div id="toast">已复制</div>
+
+<script>
+/* ---------- 数据：标签（= 句子维度） ---------- */
+var A = {
+  taste:{label:'味道好',l:['{thing}味道很正，能吃出是用心做的。','味道比预想的好，咸淡刚好，一点都不腻。','入口就知道没白来，这个味道很有记忆点。','是那种很实在的好吃，不是靠调料堆出来的。'],s:['味道是真的可以。','好吃，没踩雷。']},
+  portion:{label:'分量足',l:['分量给得实在，一个人吃差点没吃完。','这个价位能有这个分量，真的少见。','上桌的时候愣了一下，量是真的很足。','两个人点两个菜就够，不用硬凑单。'],s:['分量很足。','量给得实在。']},
+  material:{label:'用料实在',l:['用料能吃出来，不是那种糊弄的。','食材新鲜，细品就知道差不了。','该用的料一点没省，这点很难得。','食材本味保留得很好，没被盖住。'],s:['用料很实在。','食材很新鲜。']},
+  quality:{label:'品质在线',l:['整体品质在线，没有敷衍的感觉。','对比过同价位的几家，这家做得更细。','做得比想象中更认真，超出预期。','整体没什么短板，挺满意的。'],s:['品质不错。','比预期还好。']},
+  value:{label:'性价比高',l:['这个价格能有这个体验，性价比是真的高。','同样的钱在这儿花得更值。','价格很实在，不玩虚的，花得心里舒服。','该给的都给到了，性价比这块没得挑。'],s:['性价比很高。','花这个钱很值。']},
+  price:{label:'价格实在',l:['价格明明白白，没有隐藏消费。','报价很实在，不会临时加项。','该多少就多少，不会看人下菜碟。','钱花在哪儿都说得很清楚，这点很加分。'],s:['价格很实在。','没有乱收费。']},
+  speed:{label:'速度很快',l:['速度是真的快，没怎么等就好了。','效率很高，赶时间也不慌。','流程一点不拖沓，节奏把握得挺好。','人不少，但等的时间比想象中短很多。'],s:['很快，不用等。','效率很高。']},
+  ambience:{label:'环境舒服',l:['环境很舒服，灯光和音乐都恰到好处。','干净亮堂，坐着很放松。','空间不大，但布置得很用心。','氛围很松弛，待着不太想走。'],s:['环境很舒服。','氛围很好。']},
+  photo:{label:'好看出片',l:['随手一拍都好看，根本不用挑角度。','出片率很高，光一打就很有质感。','细节做得精致，拍出来特别上镜。','发朋友圈都不需要加滤镜。'],s:['很好看，出片。','颜值很高。']},
+  quiet:{label:'安静不吵',l:['很安静，不用扯着嗓子说话。','人不多的时候特别舒服，适合慢慢聊。','不吵不闹，聊天完全不费劲。','座位之间有点距离，不会互相打扰。'],s:['安静，适合聊天。','不吵，很舒服。']},
+  service:{label:'服务热情',l:['服务态度特别好，全程都很耐心。','很热情，但不会让人觉得有压力。','从进门到离开，服务都跟得上。','有需求说一声就有人应，响应很快。'],s:['服务很好。','态度特别热情。']},
+  care:{label:'服务贴心',l:['会主动帮你想到一些你没想到的地方。','细节上照顾得很周到，很贴心。','临走还提醒了注意事项，这点挺暖的。','不是那种客套的周到，是真的在帮你。'],s:['服务很贴心。','细节很周到。']},
+  hygiene:{label:'干净卫生',l:['卫生做得到位，看得到的地方都干净。','桌面和器具都很清爽，用着放心。','操作过程看得见，干净是看得见的。','没有异味，整体整洁度很高。'],s:['干净卫生。','很干净，放心。']},
+  boss:{label:'老板人好',l:['老板人很实在，聊天很舒服。','能感觉到老板是真的在用心做这件事。','老板会亲自招呼，很有人情味。','老板脾气好，什么都能聊两句。'],s:['老板人很好。','老板很实在。']},
+  patient:{label:'耐心细致',l:['问了很多遍也没不耐烦，讲得很清楚。','解释得很细，不懂的地方会再说一遍。','全程不急不催，让人很自在。','会根据你的情况给建议，不是一刀切。'],s:['很有耐心。','讲得很清楚。']},
+  nosell:{label:'不推销',l:['全程没有推销，这点太加分了。','不硬推贵的，会站在你的角度给建议。','没有办卡套路，消费得明明白白。','想慢慢挑也不会被围着转。'],s:['不推销，很自在。','没有套路。']},
+  pro:{label:'专业靠谱',l:['{who}很专业，一看就是做了很多年的。','技术这块能感觉到功底，不是新手练手。','流程很规范，每一步都有交代。','动手之前先沟通，方案讲得明明白白。'],s:['很专业。','技术很到位。']},
+  result:{label:'效果满意',l:['做完的效果比我预想的好，很满意。','变化挺明显的，不是当场好看那种。','按着给的建议做，确实有效果。','结果达到甚至超出了我的预期。'],s:['效果很好。','效果超出预期。']},
+  repeat:{label:'回头常客',l:['已经是第好几次来了，水准一直很稳定。','从第一次来就变成常客了，没失望过。','身边的朋友几乎都被我带过来了。','回头客多不是没道理的，稳定才是本事。'],s:['已经来了很多次。','老顾客了，一直很好。']},
+  detail:{label:'细节用心',l:['细节上处处有小心思，能感觉到用心。','会记得住客人的喜好，这点很打动我。','很多地方做得比预期多那么一点点。','小地方都照顾到了，整体体验很舒服。'],s:['细节很用心。','处处有小心思。']},
+  location:{label:'位置好找',l:['位置好找，导航直接到门口。','出地铁走几分钟就到，很方便。','就在路边，一眼就能看见。','虽然不在最热闹的地方，但很好找。'],s:['位置很好找。','导航直达，方便。']},
+  parking:{label:'停车方便',l:['停车方便，不用绕圈找车位。','门口就能停，开车来很省心。','附近车位好找，不用提前半小时出门。','自驾过去完全不折腾。'],s:['停车很方便。','开车来很省心。']},
+  after:{label:'售后靠谱',l:['后面有问题找他们，处理得也很快。','售后跟得上，不会卖完就不管了。','隔了一段时间再联系，态度还是一样的。','承诺的都做到了，这点让人放心。'],s:['售后很靠谱。','有问题会管。']}
+};
+
+/* ---------- 数据：行业 ---------- */
+var COMMON = ['quality','value','price','speed','ambience','photo','quiet','service','care','hygiene','boss','patient','nosell','pro','result','repeat','detail','location','parking','after'];
+var CATS = {
+  general:{label:'通用 / 其他',thing:'整体',who:'工作人员',def:['service','value','detail']},
+  food:{label:'餐饮',thing:'菜品',who:'店员',def:['taste','portion','speed','service','hygiene'],food:['taste','portion','material']},
+  hotpot:{label:'火锅烧烤',thing:'锅底和肉',who:'店员',def:['taste','material','portion','service','hygiene'],food:['taste','portion','material']},
+  drink:{label:'奶茶咖啡',thing:'饮品',who:'店员',def:['taste','speed','ambience','value'],food:['taste','material']},
+  bakery:{label:'烘焙甜品',thing:'甜品',who:'店员',def:['taste','material','photo','value'],food:['taste','material']},
+  hair:{label:'美容美发',thing:'这次的造型',who:'发型师',def:['pro','result','service','nosell']},
+  nail:{label:'美甲美睫',thing:'这个款式',who:'美甲师',def:['pro','result','patient','hygiene']},
+  stay:{label:'民宿酒店',thing:'房间',who:'老板',def:['ambience','hygiene','location','care']},
+  fitness:{label:'健身运动',thing:'课程',who:'教练',def:['pro','hygiene','result','nosell']},
+  digital:{label:'数码家电',thing:'产品',who:'店员',def:['pro','price','after','service']},
+  deco:{label:'装修建材',thing:'这次的施工',who:'师傅',def:['pro','price','after','detail']},
+  auto:{label:'汽车服务',thing:'这次保养',who:'师傅',def:['pro','price','speed','service']},
+  edu:{label:'教育培训',thing:'课程',who:'老师',def:['pro','patient','result','care']},
+  dental:{label:'口腔医疗',thing:'这次治疗',who:'医生',def:['pro','patient','hygiene','nosell']},
+  pet:{label:'宠物服务',thing:'服务',who:'店员',def:['care','hygiene','pro','price']},
+  photo2:{label:'摄影写真',thing:'成片',who:'摄影师',def:['result','patient','photo','detail']}
+};
+
+/* ---------- 数据：语气 ---------- */
+var STYLES = {
+  plain:{label:'真诚朴实',open:['这次体验是真的不错。','朋友推荐来的，没踩雷。','慕名而来，结果比想象中还好。','第一次来，整体挺满意的。','冲着口碑来的，确实没让我失望。','之前路过好几次，这次终于进来了。'],close:['以后还会再来的。','推荐给需要的朋友。','性价比可以，值得回头。','下次来还想试试别的。','总之没白来。']},
+  warm:{label:'热情夸夸',open:['真的要吹爆这家！','必须给个五星好评！','发现宝藏了，忍不住来写两句！','我的天，这家直接封神！','太喜欢了，已经安利给身边一圈人！','只能说：值，太值了！'],close:['已经安利给全公司了！','N刷预定！','闭眼冲就完事了！','这家必须列入年度最爱！','五星不解释！']},
+  soft:{label:'文艺小清新',open:['偶然路过，没想到成了今天的小惊喜。','傍晚的时候，遇见了很舒服的一家。','把今天的一点温柔，记在这里。','有些地方，去一次就会记住。','很久没有这么放松过了。','喜欢这种不急不躁的感觉。'],close:['希望下次来，还是这个样子。','愿它一直安安静静地好下去。','把这里存进收藏夹了。','下次想挑个靠窗的位置。','会记得的。']},
+  funny:{label:'幽默网感',open:['进来之前我是路人，出去之后我是自来水。','本来只想随便逛逛，结果钱包自愿投降。','作为一个嘴很挑的人，这次我服了。','我妈问我为什么笑得这么开心，我说因为值。','下次谁再说没好的，我就把这家甩他脸上。','来之前：随便吧。来之后：明天还来。'],close:['下次再来，希望老板还认得我。','我的钱包已经拉黑我了。','先不说了，我要去朋友圈炫耀。','已经在盘算下次点什么了。','写完这条我就去订下次的。']},
+  brief:{label:'简短干练',open:['体验不错，值得来。','简单说：满意。','第二次来了，一样好。','没有踩雷，推荐。','整体超出预期。','干净利落，好评。'],close:['会复购。','五星。','推荐。','还会来。','值得。']},
+  cool:{label:'冷静专业',open:['从细节看，这家做得比较到位。','对比了几家之后选了这里，结论是选对了。','整体执行层面没有明显短板。','流程规范，效率也在线。','作为长期在这里消费的顾客，评价偏正面。','客观说，这个价位能做到这样算合格以上。'],close:['综合来看，值得复购。','后续会继续关注。','推荐给有同样需求的人。','整体达到预期，没有踩坑。','从性价比角度讲，没有更好的选择。']}
+};
+
+var POWERS = {normal:'普通好评',super:'超级好评',strong:'强烈推荐'};
+var BOOST=['真心推荐。','强烈推荐，闭眼冲。','五星不解释。','推荐给所有需要的朋友。','必须安利一个。'];
+var NAMED=['说的就是{name}，记住了。','{name}，以后还会来。','以后认准{name}了。','{name}，值得推荐。','已经安利给朋友了，就说是{name}。'];
+var EXTRA=['整个过程没有任何让人不舒服的地方。','整体节奏很舒服，不慌不忙。','带朋友一起来也完全合适。','这个价位能做到这样，很难得。','希望一直保持这个水准。'];
+var EMOJI=['🔥','👍','😋','💯','✨','🥰','🎉'];
+var LENS={short:'短（约30字）',mid:'中（约80字）',long:'长（约150字）'};
+
+/* ---------- 生成器 ---------- */
+var used={};
+function pick(key,arr){
+  var pool=arr.filter(function(x){return !used[key+'|'+x]});
+  if(!pool.length)pool=arr;
+  var v=pool[Math.floor(Math.random()*pool.length)];
+  used[key+'|'+v]=1;
+  return v;
+}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function fill(s,cat,name){
+  return s.replace(/\{thing\}/g,cat.thing).replace(/\{who\}/g,cat.who).replace(/\{name\}/g,name||'');
+}
+
+function build(cfg){
+  var cat=CATS[cfg.cat],st=STYLES[cfg.style],short=cfg.style==='brief';
+  var tags=cfg.tags.length?cfg.tags:cat.def;
+  var n=cfg.len==='short'?1:(cfg.len==='mid'?2:(Math.random()<.6?3:4));
+  if(short&&n>2)n=2;
+  var aspects=shuffle(tags).slice(0,n);
+  var parts=[];
+  if(cfg.len!=='short'||short)parts.push(pick('o'+cfg.style,st.open));
+  if(cfg.detail.trim()){
+    var d=cfg.detail.trim().replace(/[。!！~～,，]+$/,'');
+    parts.push(d+'。');
+  }
+  aspects.forEach(function(id){
+    var a=A[id];if(!a)return;
+    parts.push(fill(pick(id, short?a.s:a.l),cat,cfg.name));
+  });
+  if(cfg.len==='long'&&!short)parts.push(pick('extra',EXTRA));
+  if(cfg.name.trim()&&cfg.len!=='short')parts.push(fill(pick('named',NAMED),cat,cfg.name.trim()));
+  parts.push(pick('c'+cfg.style,st.close));
+  if(cfg.power!=='normal')parts.push(pick('boost',BOOST));
+  if(cfg.power==='strong'&&cfg.len!=='short')parts.push(pick('boost',BOOST));
+  var text=parts.join('');
+  if(cfg.style==='warm')text+=EMOJI[Math.floor(Math.random()*EMOJI.length)];
+  if(cfg.style==='funny'&&Math.random()<.6)text+=EMOJI[Math.floor(Math.random()*EMOJI.length)];
+  return text;
+}
+
+/* ---------- UI ---------- */
+var cfg={cat:'general',tags:[],style:'plain',len:'mid',power:'normal',name:'',detail:''};
+var $=function(s){return document.querySelector(s)};
+
+function chipRow(el,items,isOn,onTap){
+  el.innerHTML='';
+  items.forEach(function(it){
+    var b=document.createElement('button');
+    b.type='button';b.className='chip'+(isOn(it)?' on':'');b.textContent=it.label;
+    b.onclick=function(){onTap(it);save();renderChips();};
+    el.appendChild(b);
+  });
+}
+function catTags(key){
+  var c=CATS[key],out=c.def.slice();
+  COMMON.forEach(function(t){if(out.indexOf(t)<0)out.push(t)});
+  (c.food||[]).forEach(function(t){if(out.indexOf(t)<0)out.push(t)});
+  return out;
+}
+function renderChips(){
+  chipRow($('#cats'),Object.keys(CATS).map(function(k){return {k:k,label:CATS[k].label}}),
+    function(it){return cfg.cat===it.k},
+    function(it){cfg.cat=it.k;cfg.tags=[];persist();});
+  chipRow($('#tags'),catTags(cfg.cat).map(function(k){return {k:k,label:A[k].label}}),
+    function(it){return cfg.tags.indexOf(it.k)>=0},
+    function(it){var i=cfg.tags.indexOf(it.k);if(i<0)cfg.tags.push(it.k);else cfg.tags.splice(i,1);persist();});
+  chipRow($('#styles'),Object.keys(STYLES).map(function(k){return {k:k,label:STYLES[k].label}}),
+    function(it){return cfg.style===it.k},function(it){cfg.style=it.k;persist();});
+  chipRow($('#lens'),Object.keys(LENS).map(function(k){return {k:k,label:LENS[k]}}),
+    function(it){return cfg.len===it.k},function(it){cfg.len=it.k;persist();});
+  chipRow($('#powers'),Object.keys(POWERS).map(function(k){return {k:k,label:POWERS[k]}}),
+    function(it){return cfg.power===it.k},function(it){cfg.power=it.k;persist();});
+}
+function persist(){
+  try{localStorage.setItem('hp-cfg',JSON.stringify({cat:cfg.cat,tags:cfg.tags,style:cfg.style,len:cfg.len,power:cfg.power}))}catch(e){}
+}
+function save(){cfg.name=$('#name').value;cfg.detail=$('#detail').value}
+function restore(){
+  try{
+    var d=JSON.parse(localStorage.getItem('hp-cfg')||'null');
+    if(d&&CATS[d.cat]){cfg.cat=d.cat;cfg.tags=d.tags||[];cfg.style=STYLES[d.style]?d.style:'plain';cfg.len=LENS[d.len]?d.len:'mid';cfg.power=POWERS[d.power]?d.power:'normal'}
+  }catch(e){}
+}
+
+async function copy(text){
+  if(navigator.clipboard&&window.isSecureContext){
+    try{await navigator.clipboard.writeText(text);return true}catch(e){}
+  }
+  var ta=document.createElement('textarea');
+  ta.value=text;ta.setAttribute('readonly','');
+  ta.style.cssText='position:fixed;top:0;left:0;opacity:0';
+  document.body.appendChild(ta);ta.select();ta.setSelectionRange(0,text.length);
+  var ok=false;try{ok=document.execCommand('copy')}catch(e){}
+  document.body.removeChild(ta);
+  return ok;
+}
+var toastTimer;
+function toast(msg){
+  var t=$('#toast');t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.classList.remove('show')},1600);
+}
+
+function render(){
+  save();
+  var texts=[],i;
+  for(i=0;i<3;i++)texts.push(build(cfg));
+  var out=$('#out');out.innerHTML='';
+  texts.forEach(function(t,idx){
+    var card=document.createElement('div');card.className='card res';
+    var p=document.createElement('p');p.className='txt';p.textContent=t;
+    var foot=document.createElement('div');foot.className='foot';
+    var len=document.createElement('span');len.className='len';
+    len.textContent='第 '+(idx+1)+' 条 · '+t.replace(/\s/g,'').length+' 字';
+    var btn=document.createElement('button');btn.className='cp';btn.textContent='复制';
+    btn.onclick=async function(){
+      var ok=await copy(t);
+      if(ok){btn.textContent='已复制 ✓';btn.classList.add('done');toast('已复制，去粘贴吧');
+        setTimeout(function(){btn.textContent='复制';btn.classList.remove('done')},1800);
+      }else{toast('复制失败，请长按文字手动复制')}
+    };
+    foot.appendChild(len);foot.appendChild(btn);
+    card.appendChild(p);card.appendChild(foot);
+    out.appendChild(card);
+  });
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  restore();
+  renderChips();
+  $('#gen').onclick=render;
+  $('#reroll').onclick=render;
+  $('#name').addEventListener('input',save);
+  $('#detail').addEventListener('input',save);
+});
+</script>
+</body>
+</html>
