@@ -148,7 +148,7 @@ var A = {
   quality:{label:'品质在线',l:['整体品质在线，没有敷衍的感觉。','对比过同价位的几家，这家做得更细。','做得比想象中更认真，超出预期。','整体没什么短板，挺满意的。'],s:['品质不错。','比预期还好。']},
   value:{label:'性价比高',l:['这个价格能有这个体验，性价比是真的高。','同样的钱在这儿花得更值。','价格很实在，不玩虚的，花得心里舒服。','该给的都给到了，性价比这块没得挑。'],s:['性价比很高。','花这个钱很值。']},
   price:{label:'价格实在',l:['价格明明白白，没有隐藏消费。','报价很实在，不会临时加项。','该多少就多少，不会看人下菜碟。','钱花在哪儿都说得很清楚，这点很加分。'],s:['价格很实在。','没有乱收费。']},
-  speed:{label:'速度很快',l:['速度是真的快，没怎么等就好了。','效率很高，赶时间也不慌。','流程一点不拖沓，节奏把握得挺好。','人不少，但等的时间比想象中短很多。'],s:['很快，不用等。','效率很高。']},
+  speed:{label:'速度很快',l:['速度是真的快，没怎么等就好了。','效率很高，赶时间也不慌。','流程一点不拖沓，节奏把握得挺好。','以为要等很久，结果比想象中快多了。'],s:['很快，不用等。','效率很高。']},
   ambience:{label:'环境舒服',l:['环境很舒服，灯光和音乐都恰到好处。','干净亮堂，坐着很放松。','空间不大，但布置得很用心。','氛围很松弛，待着不太想走。'],s:['环境很舒服。','氛围很好。']},
   photo:{label:'好看出片',l:['随手一拍都好看，根本不用挑角度。','出片率很高，光一打就很有质感。','细节做得精致，拍出来特别上镜。','发朋友圈都不需要加滤镜。'],s:['很好看，出片。','颜值很高。']},
   quiet:{label:'安静不吵',l:['很安静，不用扯着嗓子说话。','人不多的时候特别舒服，适合慢慢聊。','不吵不闹，聊天完全不费劲。','座位之间有点距离，不会互相打扰。'],s:['安静，适合聊天。','不吵，很舒服。']},
@@ -164,17 +164,31 @@ var A = {
   detail:{label:'细节用心',l:['细节上处处有小心思，能感觉到用心。','会记得住客人的喜好，这点很打动我。','很多地方做得比预期多那么一点点。','小地方都照顾到了，整体体验很舒服。'],s:['细节很用心。','处处有小心思。']},
   location:{label:'位置好找',l:['位置好找，导航直接到门口。','出地铁走几分钟就到，很方便。','就在路边，一眼就能看见。','虽然不在最热闹的地方，但很好找。'],s:['位置很好找。','导航直达，方便。']},
   parking:{label:'停车方便',l:['停车方便，不用绕圈找车位。','门口就能停，开车来很省心。','附近车位好找，不用提前半小时出门。','自驾过去完全不折腾。'],s:['停车很方便。','开车来很省心。']},
-  after:{label:'售后靠谱',l:['后面有问题找他们，处理得也很快。','售后跟得上，不会卖完就不管了。','隔了一段时间再联系，态度还是一样的。','承诺的都做到了，这点让人放心。'],s:['售后很靠谱。','有问题会管。']}
+  after:{label:'售后质保',l:['后面有问题找他们，处理得也很快。','售后跟得上，不会修完就不管了。','说好的质保写在单子上，出了问题随时找。','承诺的都做到了，这点让人放心。'],s:['售后很靠谱。','有问题会管。']}
+  ,ontime:{label:'上门准时',l:['约好的时间准时到了，没让人在家干等。','说几点就几点，时间观念很好。','下单没多久就联系我，当天就安排上门了。','不用等一整天，时间段卡得很准。'],s:['上门很准时。','约的时间没迟到。']}
+  ,fixonce:{label:'一次修好',l:['一次就修好了，没有反复返工。','问题找得很准，直接解决在根上。','之前别人没修好的毛病，这次彻底解决了。','修完这些天一直正常，没再犯过。'],s:['一次就修好了。','彻底解决了。']}
+  ,tidy:{label:'收拾干净',l:['进门主动换鞋套，走的时候把地上也收拾干净了。','干活前铺了垫布，家里一点没弄脏。','拆下来的旧件和垃圾都顺手带走了。','干完活现场比来之前还干净。'],s:['不弄脏家里。','走时收拾干净。']}
+  ,genuine:{label:'配件正品',l:['换的配件是正品，包装和单据都给了。','配件来路查得到，不是三无货。','旧件主动拿给我看，换什么一目了然。','该换的换、该省的省，不硬推着换新。'],s:['配件是正品。','换的东西看得见。']}
+  ,safe:{label:'搬得稳当',l:['东西都包得好好的，搬完没有磕碰。','大件拆装很专业，装回去一点不晃。','易碎品单独包了，全程盯着搬。','搬完还帮忙归位，省了我不少事。'],s:['搬得很稳。','没有磕碰。']}
+  ,thorough:{label:'打扫彻底',l:['边边角角都擦到了，不是只做表面。','平时自己够不着的地方都收拾干净了。','厨卫死角处理得很仔细。','打扫完屋子味道都不一样了，很清爽。'],s:['打扫得很彻底。','角落都照顾到了。']}
 };
 
 /* ---------- 数据：行业 ---------- */
 var COMMON = ['quality','value','price','speed','ambience','photo','quiet','service','care','hygiene','boss','patient','nosell','pro','result','repeat','detail','location','parking','after'];
 var CATS = {
   general:{label:'通用 / 其他',thing:'整体',who:'工作人员',def:['service','value','detail']},
-  food:{label:'餐饮',thing:'菜品',who:'店员',def:['taste','portion','speed','service','hygiene'],food:['taste','portion','material']},
-  hotpot:{label:'火锅烧烤',thing:'锅底和肉',who:'店员',def:['taste','material','portion','service','hygiene'],food:['taste','portion','material']},
-  drink:{label:'奶茶咖啡',thing:'饮品',who:'店员',def:['taste','speed','ambience','value'],food:['taste','material']},
-  bakery:{label:'烘焙甜品',thing:'甜品',who:'店员',def:['taste','material','photo','value'],food:['taste','material']},
+  repair:{label:'上门维修',thing:'这次的维修',who:'师傅',onsite:1,def:['ontime','fixonce','price','pro','tidy','after'],extra:['genuine','speed','care','quality','repeat'],drop:['ambience','photo','quiet','location','parking']},
+  aclean:{label:'家电清洗',thing:'这次清洗',who:'师傅',onsite:1,def:['thorough','ontime','price','pro','tidy'],extra:['hygiene','care','speed','quality','repeat'],drop:['ambience','photo','quiet','location','parking']},
+  unlock:{label:'疏通 / 开锁',thing:'这次的维修',who:'师傅',onsite:1,def:['speed','ontime','price','fixonce','pro'],extra:['genuine','tidy','care','quality','after'],drop:['ambience','photo','quiet','location','parking']},
+  phonerepair:{label:'手机电脑维修',thing:'这次的维修',who:'师傅',onsite:1,def:['fixonce','genuine','price','speed','pro'],extra:['ontime','care','quality','after','tidy'],drop:['ambience','photo','quiet','location','parking']},
+  housekeep:{label:'家政保洁',thing:'这次保洁',who:'阿姨',onsite:1,def:['thorough','hygiene','ontime','care','price'],extra:['detail','quality','patient','repeat'],drop:['ambience','photo','quiet','location','parking']},
+  moving:{label:'搬家货运',thing:'这次搬家',who:'师傅',onsite:1,def:['safe','price','speed','care','ontime'],extra:['pro','detail','quality','patient','after'],drop:['ambience','photo','quiet','location','parking']},
+  laundry:{label:'洗衣洗护',thing:'这次洗护',who:'店员',def:['thorough','hygiene','detail','price','speed'],extra:['care','quality','repeat','after'],drop:['ambience','photo','quiet']},
+  massage:{label:'推拿足疗',thing:'这次体验',who:'技师',def:['pro','result','care','hygiene','nosell'],extra:['quiet','ambience','detail','patient','repeat']},
+  food:{label:'餐饮',thing:'菜品',who:'店员',def:['taste','portion','speed','service','hygiene'],extra:['taste','portion','material']},
+  hotpot:{label:'火锅烧烤',thing:'锅底和肉',who:'店员',def:['taste','material','portion','service','hygiene'],extra:['taste','portion','material']},
+  drink:{label:'奶茶咖啡',thing:'饮品',who:'店员',def:['taste','speed','ambience','value'],extra:['taste','material']},
+  bakery:{label:'烘焙甜品',thing:'甜品',who:'店员',def:['taste','material','photo','value'],extra:['taste','material']},
   hair:{label:'美容美发',thing:'这次的造型',who:'发型师',def:['pro','result','service','nosell']},
   nail:{label:'美甲美睫',thing:'这个款式',who:'美甲师',def:['pro','result','patient','hygiene']},
   stay:{label:'民宿酒店',thing:'房间',who:'老板',def:['ambience','hygiene','location','care']},
@@ -198,6 +212,15 @@ var STYLES = {
   cool:{label:'冷静专业',open:['从细节看，这家做得比较到位。','对比了几家之后选了这里，结论是选对了。','整体执行层面没有明显短板。','流程规范，效率也在线。','作为长期在这里消费的顾客，评价偏正面。','客观说，这个价位能做到这样算合格以上。'],close:['综合来看，值得复购。','后续会继续关注。','推荐给有同样需求的人。','整体达到预期，没有踩坑。','从性价比角度讲，没有更好的选择。']}
 };
 
+/* 上门服务类专用的开场 / 结尾（"路过好几次""下次点别的"这类句子不适用） */
+var SVC={
+  plain:{open:['抱着试试看的心态下的单，结果挺惊喜。','临时坏了急着找人，还好没踩坑。','对比了两家，最后选了这家，没选错。','第一次用这家，整体比预期好。','朋友推荐的，说师傅靠谱，果然没失望。','本来没抱太大期望，做完挺满意的。'],close:['以后有需要还找他们。','联系方式已经存好了。','推荐给身边有需要的朋友。','这次算是找对人了。','省心，值得。']},
+  warm:{open:['必须给师傅点个赞！','这次是真的遇到靠谱的人了！','问题解决的那一刻，我差点想鼓掌！','太谢谢了，必须来写一条！','找对人真的能省一半心，说的就是这家！','已经推荐给同小区的邻居了！'],close:['以后这种事只认这家了！','联系方式已经存死了！','真心推荐，关键是靠谱！','这个价格这个服务，我服！','下次有问题还找你们！']},
+  soft:{open:['抱着试试看的心态下了单，没想到很顺利。','有些麻烦，被稳妥地解决了。','把这次的小顺利，记在这里。','不用来回折腾的感觉，真好。','事情办完的那一刻，心里松了一口气。','安静地把问题处理好，就是这样。'],close:['以后应该不会再为这种事发愁了。','把号码记下来了。','安静地解决掉一件麻烦事，很好。','希望一直这样稳妥下去。','就这样，挺好。']},
+  funny:{open:['本来做好被坑的准备了，结果人家很正经。','作为一个连灯泡都不会换的人，我全程只负责在旁边点头。','我以前以为上门就是来收智商税的，是我狭隘了。','问题解决得太干脆，我准备好的砍价话术都没用上。','师傅走了之后我还在想：就这？就这解决了？','这钱花得比我点的外卖还值。'],close:['联系方式已存，希望用不上，但必须有。','以后再有这种事，我就直接找他们了。','早知道这么省事，就不自己瞎折腾了。','下次有需要还找他们，反正不亏。','已经在小区群里吹了一波。']},
+  brief:{open:['上门很快，问题解决。','一次搞定，推荐。','准时、专业、收费清楚。','比想象中顺利。','没有套路，好评。'],close:['会存着备用。','靠谱，推荐。','下次还找这家。','值得。','解决了，谢谢。']},
+  cool:{open:['从下单到上门，流程比较规范。','对比了几家之后选的，结论是选对了。','沟通清楚，报价明确，结果在预期内。','整体执行下来没有明显短板。','作为长期在这家下单的客户，评价偏正面。'],close:['综合来看，值得长期合作。','后续有需要会优先考虑。','推荐给有同样需求的人。','整体达到预期。','从性价比角度讲，可以。']}
+};
 var POWERS = {normal:'普通好评',super:'超级好评',strong:'强烈推荐'};
 var BOOST=['真心推荐。','强烈推荐，不吹不黑。','这家值得被更多人知道。','安利给所有需要的朋友。','不好我也不会专门来写。'];
 var NAMED=['说的就是{name}，记住了。','{name}，以后还会来。','以后认准{name}了。','{name}，值得推荐。','已经安利给朋友了，就说是{name}。'];
@@ -229,8 +252,9 @@ function build(cfg){
   var n=cfg.len==='short'?1:(cfg.len==='mid'?2:(Math.random()<.6?3:4));
   if(short&&n>2)n=2;
   var aspects=shuffle(tags).slice(0,n);
+  var sv=cat.onsite?SVC[cfg.style]:null;
   var parts=[];
-  if(cfg.len!=='short'||short)parts.push(pick('o'+cfg.style,st.open));
+  if(cfg.len!=='short'||short)parts.push(pick('o'+cfg.style,(sv&&sv.open)||st.open));
   if(cfg.detail.trim()){
     var d=cfg.detail.trim().replace(/[。!！~～,，]+$/,'');
     parts.push(d+'。');
@@ -244,7 +268,7 @@ function build(cfg){
     if(aspects.length<4)parts.push(pick('extra',EXTRA));
   }
   if(cfg.name.trim()&&cfg.len!=='short')parts.push(fill(pick('named',NAMED),cat,cfg.name.trim()));
-  parts.push(pick('c'+cfg.style,st.close));
+  parts.push(pick('c'+cfg.style,(sv&&sv.close)||st.close));
   if(cfg.power!=='normal')parts.push(pick('boost',BOOST));
   if(cfg.power==='strong'&&cfg.len!=='short')parts.push(pick('boost',BOOST));
   var text=parts.join('');
@@ -267,15 +291,17 @@ function chipRow(el,items,isOn,onTap){
   });
 }
 function catTags(key){
-  var c=CATS[key],out=c.def.slice();
-  COMMON.forEach(function(t){if(out.indexOf(t)<0)out.push(t)});
-  (c.food||[]).forEach(function(t){if(out.indexOf(t)<0)out.push(t)});
+  var c=CATS[key],drop=c.drop||[],out=[];
+  function add(t){if(out.indexOf(t)<0&&drop.indexOf(t)<0)out.push(t)}
+  c.def.forEach(add);
+  COMMON.forEach(add);
+  (c.extra||[]).forEach(add);
   return out;
 }
 function renderChips(){
   chipRow($('#cats'),Object.keys(CATS).map(function(k){return {k:k,label:CATS[k].label}}),
     function(it){return cfg.cat===it.k},
-    function(it){cfg.cat=it.k;cfg.tags=[];persist();});
+    function(it){cfg.cat=it.k;cfg.tags=CATS[it.k].def.slice();persist();});
   chipRow($('#tags'),catTags(cfg.cat).map(function(k){return {k:k,label:A[k].label}}),
     function(it){return cfg.tags.indexOf(it.k)>=0},
     function(it){var i=cfg.tags.indexOf(it.k);if(i<0)cfg.tags.push(it.k);else cfg.tags.splice(i,1);persist();});
@@ -295,6 +321,7 @@ function restore(){
     var d=JSON.parse(localStorage.getItem('hp-cfg')||'null');
     if(d&&CATS[d.cat]){cfg.cat=d.cat;cfg.tags=d.tags||[];cfg.style=STYLES[d.style]?d.style:'plain';cfg.len=LENS[d.len]?d.len:'mid';cfg.power=POWERS[d.power]?d.power:'normal'}
   }catch(e){}
+  if(!cfg.tags.length)cfg.tags=CATS[cfg.cat].def.slice();
 }
 
 async function copy(text){
