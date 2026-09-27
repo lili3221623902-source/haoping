@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#ff6a3d">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>好评文案生成器</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>">
+<title>口碑文案助手</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
@@ -82,8 +82,8 @@ textarea{resize:vertical;min-height:62px;line-height:1.5}
 <body>
 <div class="wrap">
   <header>
-    <h1>⭐ 好评文案生成器</h1>
-    <p>选好标签，一键生成自然的好评文案</p>
+    <h1>口碑文案助手</h1>
+    <p>选好标签，一键生成自然的客户评价文案</p>
   </header>
 
   <div class="card">
@@ -125,11 +125,11 @@ textarea{resize:vertical;min-height:62px;line-height:1.5}
 
   <div class="actions">
     <button class="btn g" id="reroll">换一批</button>
-    <button class="btn p" id="gen">生成好评</button>
+    <button class="btn p" id="gen">生成文案</button>
   </div>
 
   <div class="results" id="out">
-    <div class="card empty" id="empty">点「生成好评」，立刻出 3 条候选文案 👆</div>
+    <div class="card empty" id="empty">点「生成文案」，立刻出 3 条候选 👆</div>
   </div>
 
   <div class="tip">
@@ -221,7 +221,7 @@ var SVC={
   brief:{open:['上门很快，问题解决。','一次搞定，推荐。','准时、专业、收费清楚。','比想象中顺利。','没有套路，好评。'],close:['会存着备用。','靠谱，推荐。','下次还找这家。','值得。','解决了，谢谢。']},
   cool:{open:['从下单到上门，流程比较规范。','对比了几家之后选的，结论是选对了。','沟通清楚，报价明确，结果在预期内。','整体执行下来没有明显短板。','作为长期在这家下单的客户，评价偏正面。'],close:['综合来看，值得长期合作。','后续有需要会优先考虑。','推荐给有同样需求的人。','整体达到预期。','从性价比角度讲，可以。']}
 };
-var POWERS = {normal:'普通好评',super:'超级好评',strong:'强烈推荐'};
+var POWERS = {normal:'满意',super:'很满意',strong:'强烈推荐'};
 var BOOST=['真心推荐。','强烈推荐，不吹不黑。','这家值得被更多人知道。','安利给所有需要的朋友。','不好我也不会专门来写。'];
 var NAMED=['说的就是{name}，记住了。','{name}，以后还会来。','以后认准{name}了。','{name}，值得推荐。','已经安利给朋友了，就说是{name}。'];
 var EXTRA=['整个过程没有任何让人不舒服的地方。','整体节奏很舒服，不慌不忙。','带朋友一起来也完全合适。','这个价位能做到这样，很难得。','希望一直保持这个水准。'];
