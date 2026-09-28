@@ -142,6 +142,11 @@ textarea{resize:vertical;min-height:62px;line-height:1.5}
     </div>
 
     <div class="row">
+      <div class="lab">这次的服务项目 <span class="opt">可多选</span></div>
+      <div class="chips" id="items"></div>
+    </div>
+
+    <div class="row">
       <div class="lab">想夸的点 <span class="opt">可多选</span></div>
       <div class="chips" id="tags"></div>
     </div>
@@ -260,31 +265,10 @@ var A = {
 /* ---------- 数据：行业 ---------- */
 var COMMON = ['quality','value','price','speed','ambience','photo','quiet','service','care','hygiene','boss','patient','nosell','pro','result','repeat','detail','location','parking','after'];
 var CATS = {
-  general:{label:'通用 / 其他',thing:'整体',who:'工作人员',def:['service','value','detail']},
-  repair:{label:'上门维修',thing:'这次的维修',who:'师傅',onsite:1,def:['ontime','fixonce','price','pro','tidy','after'],extra:['genuine','speed','care','quality','repeat'],drop:['ambience','photo','quiet','location','parking']},
-  aclean:{label:'家电清洗',thing:'这次清洗',who:'师傅',onsite:1,def:['thorough','ontime','price','pro','tidy'],extra:['hygiene','care','speed','quality','repeat'],drop:['ambience','photo','quiet','location','parking']},
-  unlock:{label:'疏通 / 开锁',thing:'这次的维修',who:'师傅',onsite:1,def:['speed','ontime','price','fixonce','pro'],extra:['genuine','tidy','care','quality','after'],drop:['ambience','photo','quiet','location','parking']},
-  phonerepair:{label:'手机电脑维修',thing:'这次的维修',who:'师傅',onsite:1,def:['fixonce','genuine','price','speed','pro'],extra:['ontime','care','quality','after','tidy'],drop:['ambience','photo','quiet','location','parking']},
-  housekeep:{label:'家政保洁',thing:'这次保洁',who:'阿姨',onsite:1,def:['thorough','hygiene','ontime','care','price'],extra:['detail','quality','patient','repeat'],drop:['ambience','photo','quiet','location','parking']},
-  moving:{label:'搬家货运',thing:'这次搬家',who:'师傅',onsite:1,def:['safe','price','speed','care','ontime'],extra:['pro','detail','quality','patient','after'],drop:['ambience','photo','quiet','location','parking']},
-  laundry:{label:'洗衣洗护',thing:'这次洗护',who:'店员',def:['thorough','hygiene','detail','price','speed'],extra:['care','quality','repeat','after'],drop:['ambience','photo','quiet']},
-  massage:{label:'推拿足疗',thing:'这次体验',who:'技师',def:['pro','result','care','hygiene','nosell'],extra:['quiet','ambience','detail','patient','repeat']},
-  food:{label:'餐饮',thing:'菜品',who:'店员',def:['taste','portion','speed','service','hygiene'],extra:['taste','portion','material']},
-  hotpot:{label:'火锅烧烤',thing:'锅底和肉',who:'店员',def:['taste','material','portion','service','hygiene'],extra:['taste','portion','material']},
-  drink:{label:'奶茶咖啡',thing:'饮品',who:'店员',def:['taste','speed','ambience','value'],extra:['taste','material']},
-  bakery:{label:'烘焙甜品',thing:'甜品',who:'店员',def:['taste','material','photo','value'],extra:['taste','material']},
-  hair:{label:'美容美发',thing:'这次的造型',who:'发型师',def:['pro','result','service','nosell']},
-  nail:{label:'美甲美睫',thing:'这个款式',who:'美甲师',def:['pro','result','patient','hygiene']},
-  stay:{label:'民宿酒店',thing:'房间',who:'老板',def:['ambience','hygiene','location','care']},
-  fitness:{label:'健身运动',thing:'课程',who:'教练',def:['pro','hygiene','result','nosell']},
-  digital:{label:'数码家电',thing:'产品',who:'店员',def:['pro','price','after','service']},
-  deco:{label:'装修建材',thing:'这次的施工',who:'师傅',def:['pro','price','after','detail']},
-  auto:{label:'汽车服务',thing:'这次保养',who:'师傅',def:['pro','price','speed','service']},
-  edu:{label:'教育培训',thing:'课程',who:'老师',def:['pro','patient','result','care']},
-  dental:{label:'口腔医疗',thing:'这次治疗',who:'医生',def:['pro','patient','hygiene','nosell']},
-  pet:{label:'宠物服务',thing:'服务',who:'店员',def:['care','hygiene','pro','price']},
-  photo2:{label:'摄影写真',thing:'成片',who:'摄影师',def:['result','patient','photo','detail']}
+  repair:{label:'上门维修',thing:'这次的维修',who:'师傅',onsite:1,def:['ontime','fixonce','price','pro','tidy','after'],extra:['genuine','speed','care','quality','repeat'],drop:['ambience','photo','quiet','location','parking']}
 };
+/* ---------- 数据：上门维修的服务项目 ---------- */
+var ITEMS=['空调','冰箱','洗衣机','电视','热水器','油烟机','燃气灶','微波炉','净水器','小家电','水管龙头','马桶下水','管道疏通','开关电路','灯具','晾衣架','门窗纱窗','家具','墙面瓷砖','防水补漏','开锁换锁','空调清洗','家电清洗','打孔挂画'];
 
 /* ---------- 数据：语气 ---------- */
 var STYLES = {
@@ -332,6 +316,8 @@ function fill(s,cat,name){
 
 function build(cfg){
   var cat=CATS[cfg.cat],st=STYLES[cfg.style],short=cfg.style==='brief';
+  var items=(cfg.items||[]).slice(0,3);
+  if(items.length)cat={label:cat.label,thing:items.join('、'),who:cat.who,onsite:cat.onsite};
   var tags=cfg.tags.length?cfg.tags:cat.def;
   var n=cfg.len==='short'?1:(cfg.len==='mid'?2:(Math.random()<.6?3:4));
   if(short&&n>2)n=2;
@@ -339,6 +325,7 @@ function build(cfg){
   var sv=cat.onsite?SVC[cfg.style]:null;
   var parts=[];
   if(cfg.len!=='short'||short)parts.push(pick('o'+cfg.style,(sv&&sv.open)||st.open));
+  if(items.length&&cfg.len!=='short')parts.push('这次要弄的是'+items.join('、')+'。');
   if(cfg.detail.trim()){
     var d=cfg.detail.trim().replace(/[。!！~～,，]+$/,'');
     parts.push(d+'。');
@@ -362,7 +349,7 @@ function build(cfg){
 }
 
 /* ---------- UI ---------- */
-var cfg={cat:'repair',tags:[],style:'plain',len:'mid',power:'normal',name:'',detail:''};
+var cfg={cat:'repair',items:[],tags:[],style:'plain',len:'mid',power:'normal',name:'',detail:''};
 var $=function(s){return document.querySelector(s)};
 
 function chipRow(el,items,isOn,onTap){
@@ -386,6 +373,9 @@ function renderChips(){
   chipRow($('#cats'),Object.keys(CATS).map(function(k){return {k:k,label:CATS[k].label}}),
     function(it){return cfg.cat===it.k},
     function(it){cfg.cat=it.k;cfg.tags=CATS[it.k].def.slice();persist();});
+  chipRow($('#items'),ITEMS.map(function(k){return {k:k,label:k}}),
+    function(it){return cfg.items.indexOf(it.k)>=0},
+    function(it){var i=cfg.items.indexOf(it.k);if(i<0)cfg.items.push(it.k);else cfg.items.splice(i,1);persist();});
   chipRow($('#tags'),catTags(cfg.cat).map(function(k){return {k:k,label:A[k].label}}),
     function(it){return cfg.tags.indexOf(it.k)>=0},
     function(it){var i=cfg.tags.indexOf(it.k);if(i<0)cfg.tags.push(it.k);else cfg.tags.splice(i,1);persist();});
@@ -397,13 +387,13 @@ function renderChips(){
     function(it){return cfg.power===it.k},function(it){cfg.power=it.k;persist();});
 }
 function persist(){
-  try{localStorage.setItem('hp-cfg',JSON.stringify({cat:cfg.cat,tags:cfg.tags,style:cfg.style,len:cfg.len,power:cfg.power}))}catch(e){}
+  try{localStorage.setItem('hp-cfg',JSON.stringify({cat:cfg.cat,items:cfg.items,tags:cfg.tags,style:cfg.style,len:cfg.len,power:cfg.power}))}catch(e){}
 }
 function save(){cfg.name=$('#name').value;cfg.detail=$('#detail').value}
 function restore(){
   try{
     var d=JSON.parse(localStorage.getItem('hp-cfg')||'null');
-    if(d&&CATS[d.cat]){cfg.cat=d.cat;cfg.tags=d.tags||[];cfg.style=STYLES[d.style]?d.style:'plain';cfg.len=LENS[d.len]?d.len:'mid';cfg.power=POWERS[d.power]?d.power:'normal'}
+    if(d&&CATS[d.cat]){cfg.cat=d.cat;cfg.items=(d.items||[]).filter(function(k){return ITEMS.indexOf(k)>=0});cfg.tags=d.tags||[];cfg.style=STYLES[d.style]?d.style:'plain';cfg.len=LENS[d.len]?d.len:'mid';cfg.power=POWERS[d.power]?d.power:'normal'}
   }catch(e){}
   if(!cfg.tags.length)cfg.tags=CATS[cfg.cat].def.slice();
 }
