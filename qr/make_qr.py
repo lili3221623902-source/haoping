@@ -1,64 +1,80 @@
 # -*- coding: utf-8 -*-
-"""生成「口碑文案助手」扫码卡片（可打印）+ 纯二维码两种图。"""
+"""「好惠修 · 口碑文案助手」扫码物料：可打印卡片(A6) + 方形版(1080) + 纯二维码。"""
 import segno
 from PIL import Image, ImageDraw, ImageFont
 
-URL = "https://lili3221623902-source.github.io/koubei/"
+URL  = "https://lili3221623902-source.github.io/koubei/"
 SHOP = "好惠修 家庭维修"
-BRAND = (255, 106, 61)
-DARK = (28, 30, 34)
-GREY = (124, 130, 140)
-LINE = (232, 234, 238)
+LOGO = "../assets/logo-on-light.png"
+
+# 色板取自 好惠修 logo：主橙 / 亮橙 / 深蓝黑
+BRAND = (243, 88, 3)
+BRAND2 = (252, 154, 43)
+DARK  = (27, 33, 47)
+GREY  = (120, 130, 145)
+LINE  = (231, 234, 240)
 
 FONT = "/System/Library/Fonts/PingFang.ttc"
-def f(size, weight=0):
-    return ImageFont.truetype(FONT, size, index=weight)
+f = lambda size, weight=0: ImageFont.truetype(FONT, size, index=weight)
 
 qr = segno.make(URL, error="h")
 matrix = list(qr.matrix)
 n = len(matrix)
+logo = Image.open(LOGO)
 
+def draw_qr(d, x0, y0, mod, quiet=3):
+    for r, row in enumerate(matrix):
+        for c, v in enumerate(row):
+            if v:
+                px, py = x0 + (c + quiet) * mod, y0 + (r + quiet) * mod
+                d.rectangle([px, py, px + mod - 1, py + mod - 1], fill=DARK)
+    return (n + quiet * 2) * mod
+
+# ---------- A6 打印卡片 ----------
 W, H = 1240, 1748
 im = Image.new("RGB", (W, H), "white")
 d = ImageDraw.Draw(im)
+ctr = lambda t, y, font, fill: d.text(((W - (d.textbbox((0, 0), t, font=font)[2])) / 2, y), t, font=font, fill=fill)
 
-def center(text, y, font, fill):
-    box = d.textbbox((0, 0), text, font=font)
-    d.text(((W - (box[2] - box[0])) / 2, y), text, font=font, fill=fill)
-    return box[3] - box[1]
-
-# 顶部品牌条
 d.rectangle([0, 0, W, 14], fill=BRAND)
-center(SHOP, 92, f(30, 1), BRAND)
-center("口碑文案助手", 146, f(76, 4), DARK)
-center("扫码，一分钟写好一条走心的顾客评价", 262, f(34, 0), GREY)
+lh = 150
+lg = logo.resize((int(logo.width * lh / logo.height), lh), Image.LANCZOS)
+im.paste(lg, ((W - lg.width) // 2, 74), lg)
+ctr("口碑文案助手", 262, f(74, 4), DARK)
+ctr("扫码，一分钟写好一条走心的顾客评价", 372, f(33, 0), GREY)
 
-# 二维码（模块对齐整数，保证清晰）
-MOD, QUIET = 12, 3            # 每个模块像素、静默区模块数
-side = (n + QUIET * 2) * MOD
-x0, y0 = (W - side) // 2, 440
-d.rounded_rectangle([x0 - 26, y0 - 26, x0 + side + 26, y0 + side + 26], 26, outline=LINE, width=3)
-for r, row in enumerate(matrix):
-    for c, v in enumerate(row):
-        if v:
-            px = x0 + (c + QUIET) * MOD
-            py = y0 + (r + QUIET) * MOD
-            d.rectangle([px, py, px + MOD - 1, py + MOD - 1], fill=DARK)
+side = draw_qr(d, (W - (n + 6) * 12) // 2, 470, 12)
+box = [((W - side) // 2 - 26, 444), ((W + side) // 2 + 26, 470 + side + 26)]
+d.rounded_rectangle(box, 26, outline=LINE, width=3)
 
-y = y0 + side + 120
-center("微信扫一扫 / 相机扫码", y, f(32, 1), DARK)
-y += 74
+y = 470 + side + 96
+ctr("微信扫一扫 / 相机扫码", y, f(32, 1), DARK); y += 80
 for t in ["① 打开页面，选好标签生成文案", "② 一键复制，跟着按钮去平台", "③ 到评价框长按粘贴，发出"]:
-    center(t, y, f(30, 0), GREY)
-    y += 52
-
-d.line([140, H - 150, W - 140, H - 150], fill=LINE, width=3)
-center("把二维码打印出来，贴在前台 / 工单 / 名片上", H - 118, f(26, 0), GREY)
-
+    ctr(t, y, f(30, 0), GREY); y += 54
+d.line([140, H - 148, W - 140, H - 148], fill=LINE, width=3)
+ctr("把二维码打印出来，贴在前台 / 工单 / 名片上", H - 112, f(26, 0), GREY)
 im.save("扫码卡片.png", dpi=(300, 300))
 im.resize((W // 3, H // 3), Image.LANCZOS).save("扫码卡片_预览.png")
 
-# 纯二维码（贴到设计稿里用）
+# ---------- 1080 方形版 ----------
+S = 1080
+sq = Image.new("RGB", (S, S), "white")
+sd = ImageDraw.Draw(sq)
+sctr = lambda t, y, font, fill: sd.text(((S - (sd.textbbox((0, 0), t, font=font)[2])) / 2, y), t, font=font, fill=fill)
+sd.rectangle([0, 0, S, 12], fill=BRAND)
+slh = 132
+slg = logo.resize((int(logo.width * slh / logo.height), slh), Image.LANCZOS)
+sq.paste(slg, ((S - slg.width) // 2, 52), slg)
+sctr("扫码写评价 · 一分钟搞定", 212, f(27, 0), GREY)
+mod, quiet = 15, 3
+x0 = (S - (n + quiet * 2) * mod) // 2
+y0 = 268
+side2 = draw_qr(sd, x0, y0, mod, quiet)
+sctr("微信扫一扫 / 相机扫码", y0 + side2 + 26, f(27, 1), DARK)
+sq.resize((S // 2, S // 2), Image.LANCZOS).save("方形版_预览.png")
+sq.save("方形版_1080.png", dpi=(300, 300))
+
+# ---------- 纯二维码 ----------
 pure = Image.new("RGB", ((n + 8) * 24, (n + 8) * 24), "white")
 pd = ImageDraw.Draw(pure)
 for r, row in enumerate(matrix):
@@ -66,33 +82,4 @@ for r, row in enumerate(matrix):
         if v:
             pd.rectangle([(c + 4) * 24, (r + 4) * 24, (c + 5) * 24 - 1, (r + 5) * 24 - 1], fill="black")
 pure.save("二维码_纯图.png", dpi=(300, 300))
-
-# 方形版：发朋友圈 / 群 / 贴在工单上
-S = 1080
-sq = Image.new("RGB", (S, S), "white")
-sd = ImageDraw.Draw(sq)
-sd.rectangle([0, 0, S, 12], fill=BRAND)
-sf = f(24, 1)
-box = sd.textbbox((0, 0), SHOP, font=sf)
-sd.text(((S - (box[2] - box[0])) / 2, 56), SHOP, font=sf, fill=BRAND)
-tf = f(58, 4)
-box = sd.textbbox((0, 0), "口碑文案助手", font=tf)
-sd.text(((S - (box[2] - box[0])) / 2, 104), "口碑文案助手", font=tf, fill=DARK)
-sub = pif = f(26, 0)
-box = sd.textbbox((0, 0), "扫码写评价 · 一分钟搞定", font=sub)
-sd.text(((S - (box[2] - box[0])) / 2, 184), "扫码写评价 · 一分钟搞定", font=sub, fill=GREY)
-MOD2 = 15
-side2 = (n + 6) * MOD2
-sx = (S - side2) // 2
-sy = 258
-for r, row in enumerate(matrix):
-    for c, v in enumerate(row):
-        if v:
-            px, py = sx + (c + 3) * MOD2, sy + (r + 3) * MOD2
-            sd.rectangle([px, py, px + MOD2 - 1, py + MOD2 - 1], fill=DARK)
-box = sd.textbbox((0, 0), "微信扫一扫 / 相机扫码", font=f(26, 1))
-sd.text(((S - (box[2] - box[0])) / 2, sy + side2 + 22), "微信扫一扫 / 相机扫码", font=f(26, 1), fill=DARK)
-sq.resize((S // 2, S // 2), Image.LANCZOS).save("方形版_预览.png")
-sq.save("方形版_1080.png", dpi=(300, 300))
-print("URL:", URL, "| 模块数:", n, "| 版本:", qr.version)
-print("卡片尺寸: %dx%d (A6 300dpi)" % (W, H))
+print("URL:", URL, "| 模块:", n, "| 版本:", qr.version)
