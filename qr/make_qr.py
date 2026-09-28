@@ -37,17 +37,16 @@ d = ImageDraw.Draw(im)
 ctr = lambda t, y, font, fill: d.text(((W - (d.textbbox((0, 0), t, font=font)[2])) / 2, y), t, font=font, fill=fill)
 
 d.rectangle([0, 0, W, 14], fill=BRAND)
-lh = 150
+lh = 200
 lg = logo.resize((int(logo.width * lh / logo.height), lh), Image.LANCZOS)
-im.paste(lg, ((W - lg.width) // 2, 74), lg)
-ctr("口碑文案助手", 262, f(74, 4), DARK)
-ctr("扫码，一分钟写好一条走心的顾客评价", 372, f(33, 0), GREY)
+im.paste(lg, ((W - lg.width) // 2, 82), lg)
+ctr("扫码写评价 · 一分钟搞定", 336, f(38, 1), DARK)
 
-side = draw_qr(d, (W - (n + 6) * 12) // 2, 470, 12)
-box = [((W - side) // 2 - 26, 444), ((W + side) // 2 + 26, 470 + side + 26)]
+side = draw_qr(d, (W - (n + 6) * 12) // 2, 460, 12)
+box = [((W - side) // 2 - 26, 434), ((W + side) // 2 + 26, 460 + side + 26)]
 d.rounded_rectangle(box, 26, outline=LINE, width=3)
 
-y = 470 + side + 96
+y = 460 + side + 96
 ctr("微信扫一扫 / 相机扫码", y, f(32, 1), DARK); y += 80
 for t in ["① 打开页面，选好标签生成文案", "② 一键复制，跟着按钮去平台", "③ 到评价框长按粘贴，发出"]:
     ctr(t, y, f(30, 0), GREY); y += 54
@@ -62,13 +61,13 @@ sq = Image.new("RGB", (S, S), "white")
 sd = ImageDraw.Draw(sq)
 sctr = lambda t, y, font, fill: sd.text(((S - (sd.textbbox((0, 0), t, font=font)[2])) / 2, y), t, font=font, fill=fill)
 sd.rectangle([0, 0, S, 12], fill=BRAND)
-slh = 132
+slh = 150
 slg = logo.resize((int(logo.width * slh / logo.height), slh), Image.LANCZOS)
-sq.paste(slg, ((S - slg.width) // 2, 52), slg)
-sctr("扫码写评价 · 一分钟搞定", 212, f(27, 0), GREY)
-mod, quiet = 15, 3
+sq.paste(slg, ((S - slg.width) // 2, 56), slg)
+sctr("扫码写评价 · 一分钟搞定", 232, f(29, 1), DARK)
+mod, quiet = 14, 3
 x0 = (S - (n + quiet * 2) * mod) // 2
-y0 = 268
+y0 = 290
 side2 = draw_qr(sd, x0, y0, mod, quiet)
 sctr("微信扫一扫 / 相机扫码", y0 + side2 + 26, f(27, 1), DARK)
 sq.resize((S // 2, S // 2), Image.LANCZOS).save("方形版_预览.png")
