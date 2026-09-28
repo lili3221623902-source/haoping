@@ -70,6 +70,21 @@ textarea{resize:vertical;min-height:62px;line-height:1.5}
 .cp.done{background:var(--brand);color:#fff;border-color:var(--brand)}
 .empty{color:var(--muted);text-align:center;padding:26px 10px;font-size:14px;line-height:1.9}
 .tip{color:var(--muted);font-size:12.5px;text-align:center;line-height:1.9;padding:4px 10px 22px}
+/* 去平台发布 */
+.steps{margin:0 0 15px;padding-left:19px;color:var(--muted);font-size:13px;line-height:2}
+.steps b{color:var(--fg);font-weight:600}
+.steps li::marker{color:var(--brand);font-weight:700}
+.plats{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+@media(min-width:560px){.plats{grid-template-columns:repeat(3,1fr)}}
+.plat{display:flex;align-items:center;gap:8px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;
+  background:var(--chip);border:1px solid var(--line);border-radius:11px;padding:12px 13px;color:var(--fg);
+  transition:.15s;text-align:left}
+.plat:active{transform:scale(.98)}
+.plat i{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+.plat em{font-style:normal}
+.plat span{margin-left:auto;font-size:11px;font-weight:400;color:var(--muted);white-space:nowrap}
+.plat.wide{grid-column:1/-1}
+.pnote{font-size:12.5px;color:var(--muted);margin:13px 0 0;line-height:1.85}
 #toast{
   position:fixed;left:50%;bottom:calc(30px + env(safe-area-inset-bottom));transform:translate(-50%,16px);
   background:rgba(20,22,26,.92);color:#fff;padding:11px 20px;border-radius:999px;font-size:14px;
@@ -132,6 +147,26 @@ textarea{resize:vertical;min-height:62px;line-height:1.5}
     <div class="card empty" id="empty">点「生成文案」，立刻出 3 条候选 👆</div>
   </div>
 
+  <!--
+    ============ 门店平台链接（老板填这里） ============
+    把每个平台的【本店】链接粘到下面 script 里 PLATFORMS 的 link:'' 引号内，
+    留空的平台不会显示给客户。
+      大众点评 / 美团：进店铺主页 → 分享 → 复制链接
+      抖音：团购或门店页 → 分享 → 复制链接
+      高德 / 百度地图：搜到本店 → 分享 → 复制链接
+    填好保存就生效，客户点按钮会自动复制文案并跳转过去。
+  -->
+  <div class="card">
+    <div class="lab" style="margin-bottom:14px">下一步：去平台发布</div>
+    <ol class="steps">
+      <li>先点结果卡片上的<b>复制</b></li>
+      <li>再点下面要去的平台（<b>会自动帮你复制一次</b>）</li>
+      <li>到评价框<b>长按 → 粘贴</b>，发出去</li>
+    </ol>
+    <div class="plats" id="plats"></div>
+    <p class="pnote" id="pnote"></p>
+  </div>
+
   <div class="tip">
     生成的文案可自由修改 · 加上自己的真实细节会更自然<br>
     把链接发到微信 / 群聊 / 打印成二维码，别人用手机也能直接打开
@@ -140,6 +175,20 @@ textarea{resize:vertical;min-height:62px;line-height:1.5}
 <div id="toast">已复制</div>
 
 <script>
+/* ================== 门店配置：老板只改这里 ==================
+   SHOP_NAME  = 门店名（客户没填"店铺/商品名称"时，"复制店名"用的就是它）
+   PLATFORMS  = 各平台的本店链接；link 留空 = 该平台不显示给客户
+   ========================================================== */
+var SHOP_NAME='';
+var PLATFORMS=[
+  {name:'大众点评',color:'#FF6633',link:''},
+  {name:'美团',    color:'#FFC300',link:''},
+  {name:'抖音',    color:'#FE2C55',link:''},
+  {name:'高德地图',color:'#1677FF',link:''},
+  {name:'百度地图',color:'#2932E1',link:''},
+  {name:'小红书',  color:'#FF2442',link:''}
+];
+
 /* ---------- 数据：标签（= 句子维度） ---------- */
 var A = {
   taste:{label:'味道好',l:['{thing}味道很正，能吃出是用心做的。','味道比预想的好，咸淡刚好，一点都不腻。','入口就知道没白来，这个味道很有记忆点。','是那种很实在的好吃，不是靠调料堆出来的。'],s:['味道是真的可以。','好吃，没踩雷。']},
@@ -342,10 +391,60 @@ function toast(msg){
   clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.classList.remove('show')},1600);
 }
 
+var shown=[],lastCopied='';
+/* 同步复制：必须在点击手势内同步完成，否则后面 window.open 会被浏览器当弹窗拦掉 */
+function copySync(text){
+  var ta=document.createElement('textarea');
+  ta.value=text;ta.setAttribute('readonly','');
+  ta.style.cssText='position:fixed;top:0;left:0;opacity:0';
+  document.body.appendChild(ta);ta.select();ta.setSelectionRange(0,text.length);
+  var ok=false;try{ok=document.execCommand('copy')}catch(e){}
+  document.body.removeChild(ta);
+  return ok;
+}
+function shopName(){return ($('#name').value||'').trim()||SHOP_NAME}
+function renderPlats(){
+  var box=$('#plats');if(!box)return;
+  box.innerHTML='';
+  var list=PLATFORMS.filter(function(p){return (p.link||'').trim()});
+  if(!list.length){
+    var b=document.createElement('button');
+    b.type='button';b.className='plat wide';
+    var d=document.createElement('i');d.style.background='#8a8f98';
+    var n=document.createElement('em');n.textContent='复制店名';
+    var g=document.createElement('span');g.textContent='去 App 搜索本店 →';
+    b.appendChild(d);b.appendChild(n);b.appendChild(g);
+    b.onclick=function(){
+      var nm=shopName();
+      if(!nm){toast('上面先填一下门店名称');return}
+      copySync(nm);toast('店名已复制，去 App 里搜一下本店');
+    };
+    box.appendChild(b);
+    $('#pnote').textContent='复制店名后，打开大众点评 / 美团 / 抖音 / 高德地图搜索本店，在评价框长按粘贴即可发布。';
+    return;
+  }
+  list.forEach(function(p){
+    var b=document.createElement('button');
+    b.type='button';b.className='plat';
+    var d=document.createElement('i');d.style.background=p.color;
+    var n=document.createElement('em');n.textContent=p.name;
+    var g=document.createElement('span');g.textContent='去评价 →';
+    b.appendChild(d);b.appendChild(n);b.appendChild(g);
+    b.onclick=function(){
+      var t=lastCopied||shown[0]||'';
+      if(t)copySync(t);
+      window.open(p.link,'_blank','noopener');
+      toast(t?'文案已复制 · 到评价框长按粘贴':'已打开，记得先复制文案');
+    };
+    box.appendChild(b);
+  });
+  $('#pnote').textContent='点平台会先帮你复制一次文案，到评价框长按粘贴就能发布。';
+}
 function render(){
   save();
   var texts=[],i;
   for(i=0;i<3;i++)texts.push(build(cfg));
+  shown=texts;
   var out=$('#out');out.innerHTML='';
   texts.forEach(function(t,idx){
     var card=document.createElement('div');card.className='card res';
@@ -356,7 +455,7 @@ function render(){
     var btn=document.createElement('button');btn.className='cp';btn.textContent='复制';
     btn.onclick=async function(){
       var ok=await copy(t);
-      if(ok){btn.textContent='已复制 ✓';btn.classList.add('done');toast('已复制，去粘贴吧');
+      if(ok){lastCopied=t;btn.textContent='已复制 ✓';btn.classList.add('done');toast('已复制 · 可在下面选平台发布');
         setTimeout(function(){btn.textContent='复制';btn.classList.remove('done')},1800);
       }else{toast('复制失败，请长按文字手动复制')}
     };
@@ -369,6 +468,7 @@ function render(){
 document.addEventListener('DOMContentLoaded',function(){
   restore();
   renderChips();
+  renderPlats();
   $('#gen').onclick=render;
   $('#reroll').onclick=render;
   $('#name').addEventListener('input',save);
