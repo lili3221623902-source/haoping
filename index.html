@@ -190,6 +190,7 @@ var PLATFORMS=[
   {name:'大众点评',color:'#FF6633',link:'',order:1,home:'https://m.dianping.com/',
    search:'https://www.dianping.com/search/keyword/1/0_{kw}'},
   {name:'美团',    color:'#FFC300',link:'',order:1,home:'https://i.meituan.com/',
+   scheme:'imeituan://www.meituan.com/order/list',
    search:'https://i.meituan.com/s/{kw}'},
   {name:'抖音',    color:'#FE2C55',link:'',home:'https://www.douyin.com/',
    search:'https://www.douyin.com/search/{kw}'},
@@ -415,6 +416,18 @@ function copySync(text){
   return ok;
 }
 function shopName(){return ($('#name').value||'').trim()||SHOP_NAME}
+function inWeChat(){return /MicroMessenger/i.test(navigator.userAgent)}
+/* 唤起 App：能唤起就留在 App 里（页面会切后台），唤不起来再退回网页 */
+function openApp(scheme,fallback){
+  var done=false,timer;
+  function onVis(){if(document.hidden){done=true;clearTimeout(timer);document.removeEventListener('visibilitychange',onVis)}}
+  document.addEventListener('visibilitychange',onVis);
+  timer=setTimeout(function(){
+    document.removeEventListener('visibilitychange',onVis);
+    if(!done&&fallback)window.open(fallback,'_blank','noopener');
+  },1600);
+  try{window.location.href=scheme}catch(e){}
+}
 function showHint(title,lines){
   var h=$('#phint');if(!h)return;
   h.innerHTML='';
@@ -439,6 +452,20 @@ function renderPlats(){
       var t=lastCopied||shown[0]||'';
       if(t)copySync(t);
       var nm=shopName(),url=link,msg;
+      if(!url&&p.scheme&&!inWeChat()){
+        var back=(nm&&p.search)?p.search.replace('{kw}',encodeURIComponent(nm)):p.home||'';
+        toast((t?'文案已复制 · ':'')+'正在打开'+p.name);
+        showHint('在'+p.name+'里点开本店的订单，再长按粘贴',
+          ['① 打开后找到本店的那笔订单','② 点「评价」，在输入框长按 → 粘贴，发出去']);
+        openApp(p.scheme,back);
+        return;
+      }
+      if(!url&&p.scheme&&inWeChat()){
+        toast('微信里打不开 App · 点右上角「在浏览器打开」再用');
+        showHint('微信里点不动 App，多一步就好',
+          ['① 点右上角「…」→「在浏览器打开」','② 回到本页再点一次「'+p.name+'」','③ 打开订单后点「评价」，长按粘贴']);
+        return;
+      }
       if(!url&&nm&&p.search){
         url=p.search.replace('{kw}',encodeURIComponent(nm));
         msg=(t?'文案已复制 · ':'')+'去'+p.name+'搜「'+nm+'」';
