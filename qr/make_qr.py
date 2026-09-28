@@ -39,18 +39,12 @@ d.rectangle([0, 0, W, 14], fill=BRAND)
 
 lh = 200
 lg = logo.resize((int(logo.width * lh / logo.height), lh), Image.LANCZOS)
-im.paste(lg, ((W - lg.width) // 2, 132), lg)
-ctr("扫码写评价", 386, f(76, 4), DARK)
-ctr("上门维修服务 · 一分钟搞定", 500, f(34, 0), GREY)
+im.paste(lg, ((W - lg.width) // 2, 208), lg)
+ctr("扫码写评价", 470, f(76, 4), DARK)
+ctr("上门维修服务 · 一分钟搞定", 584, f(34, 0), GREY)
 
-SIDE = draw_qr(d, (W - (n + 6) * 16) // 2, 590, 16)
-d.rounded_rectangle([(W - SIDE) // 2 - 28, 562, (W + SIDE) // 2 + 28, 590 + SIDE + 28], 28, outline=LINE, width=3)
-
-y = 590 + SIDE + 66
-for t in ["① 选好这次的服务项目", "② 一键复制生成的评价", "③ 去平台长按粘贴，发出"]:
-    ctr(t, y, f(30, 0), GREY); y += 52
-d.line([150, H - 146, W - 150, H - 146], fill=LINE, width=3)
-ctr("服务完成后，请客户扫码写评价", H - 110, f(27, 0), GREY)
+SIDE = draw_qr(d, (W - (n + 6) * 18) // 2, 700, 18)
+d.rounded_rectangle([(W - SIDE) // 2 - 30, 670, (W + SIDE) // 2 + 30, 700 + SIDE + 30], 30, outline=LINE, width=3)
 im.save("扫码卡片.png", dpi=(300, 300))
 im.resize((W // 3, H // 3), Image.LANCZOS).save("扫码卡片_预览.png")
 
@@ -63,12 +57,11 @@ sd.rectangle([0, 0, S, 12], fill=BRAND)
 
 slh = 140
 slg = logo.resize((int(logo.width * slh / logo.height), slh), Image.LANCZOS)
-sq.paste(slg, ((S - slg.width) // 2, 70), slg)
-sctr("扫码写评价", 236, f(52, 4), DARK)
+sq.paste(slg, ((S - slg.width) // 2, 86), slg)
+sctr("扫码写评价", 252, f(52, 4), DARK)
 
-SIDE2 = draw_qr(sd, (S - (n + 6) * 13) // 2, 340, 13)
-sd.rounded_rectangle([(S - SIDE2) // 2 - 24, 316, (S + SIDE2) // 2 + 24, 340 + SIDE2 + 24], 24, outline=LINE, width=3)
-sctr("微信扫一扫 / 相机扫码", 340 + SIDE2 + 40, f(26, 1), DARK)
+SIDE2 = draw_qr(sd, (S - (n + 6) * 13) // 2, 372, 13)
+sd.rounded_rectangle([(S - SIDE2) // 2 - 24, 346, (S + SIDE2) // 2 + 24, 372 + SIDE2 + 24], 24, outline=LINE, width=3)
 sq.resize((S // 2, S // 2), Image.LANCZOS).save("方形版_预览.png")
 sq.save("方形版_1080.png", dpi=(300, 300))
 

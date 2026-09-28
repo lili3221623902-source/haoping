@@ -44,18 +44,15 @@ body{
 @media (prefers-reduced-motion:reduce){.topbar:before{animation:none}}
 .topbar:after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;z-index:2;
   background:linear-gradient(90deg,var(--brand),var(--brand2) 42%,rgba(243,88,3,0) 100%)}
-.topbar .wrap{position:relative;z-index:1}
-.logo{height:76px;width:auto;display:block;position:relative;z-index:2}
+.topbar .wrap{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.logo{height:76px;width:auto;display:block;position:relative;z-index:2;flex:0 0 auto}
+.slogan{font-size:14px;letter-spacing:1.2px;line-height:1.55;text-align:right;color:var(--head-fg);opacity:.85;position:relative;z-index:2}
 /* 右侧装饰：品牌光晕 + 两道细弧（纯装饰，无文字） */
 .topbar .wrap:after{content:"";position:absolute;right:-16px;top:50%;width:200px;height:200px;margin-top:-100px;
   border-radius:50%;pointer-events:none;
   background:radial-gradient(circle at 62% 50%,rgba(243,88,3,.17),rgba(243,88,3,.05) 46%,transparent 72%)}
-.topbar .wrap:before{content:"";position:absolute;right:-34px;top:50%;width:236px;height:236px;margin-top:-118px;
-  border:1.5px solid rgba(243,88,3,.16);border-left-color:transparent;border-bottom-color:transparent;
-  border-radius:50%;pointer-events:none}
 .only-dark{display:none}
 @media (prefers-color-scheme:dark){.only-light{display:none}.only-dark{display:block}}
-.lead{color:var(--muted);font-size:13.5px;line-height:1.75;margin:16px 2px 14px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
 .row{margin-bottom:16px}
 .row:last-child{margin-bottom:0}
@@ -128,10 +125,10 @@ textarea{resize:vertical;min-height:62px;line-height:1.5}
   <div class="wrap">
     <img class="logo only-light" src="assets/logo-on-light.png" alt="好惠修 家庭维修">
     <img class="logo only-dark" src="assets/logo-on-dark.png" alt="好惠修 家庭维修">
+    <span class="slogan">好惠修守护你的家居生活</span>
   </div>
 </div>
 <div class="wrap">
-  <p class="lead">按这次上门服务的实际情况勾选，生成几条可以直接发出去的顾客评价。</p>
 
   <div class="card">
     <div class="row">
