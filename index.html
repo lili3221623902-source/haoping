@@ -55,6 +55,7 @@ body{
   border-radius:50%;pointer-events:none}
 .only-dark{display:none}
 @media (prefers-color-scheme:dark){.only-light{display:none}.only-dark{display:block}}
+.lead{color:var(--muted);font-size:13.5px;line-height:1.75;margin:16px 2px 14px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
 .row{margin-bottom:16px}
 .row:last-child{margin-bottom:0}
@@ -130,6 +131,7 @@ textarea{resize:vertical;min-height:62px;line-height:1.5}
   </div>
 </div>
 <div class="wrap">
+  <p class="lead">按这次上门服务的实际情况勾选，生成几条可以直接发出去的顾客评价。</p>
 
   <div class="card">
     <div class="row">
@@ -174,7 +176,7 @@ textarea{resize:vertical;min-height:62px;line-height:1.5}
   </div>
 
   <div class="results" id="out">
-    <div class="card empty" id="empty">点「生成文案」</div>
+    <div class="card empty" id="empty">点「生成文案」，出 3 条候选</div>
   </div>
 
   <!--
@@ -363,7 +365,7 @@ function build(cfg){
 }
 
 /* ---------- UI ---------- */
-var cfg={cat:'general',tags:[],style:'plain',len:'mid',power:'normal',name:'',detail:''};
+var cfg={cat:'repair',tags:[],style:'plain',len:'mid',power:'normal',name:'',detail:''};
 var $=function(s){return document.querySelector(s)};
 
 function chipRow(el,items,isOn,onTap){
