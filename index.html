@@ -4,23 +4,23 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#131519" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#141A24" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>好惠修 · 口碑文案助手</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%2314171c'/><text x='32' y='45' font-size='38' font-weight='bold' text-anchor='middle' fill='%23ff6a3d' font-family='PingFang SC,sans-serif'>好</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%231B212F'/><text x='32' y='45' font-size='38' font-weight='bold' text-anchor='middle' fill='%23F35803' font-family='PingFang SC,sans-serif'>好</text></svg>">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
   --bg:#f5f6f8;--card:#fff;--fg:#1a1c20;--muted:#6b7280;--line:#e6e8ec;
-  --chip:#f1f3f6;--chip-on:#fff0ea;--brand:#ff6a3d;--brand2:#ff9166;
-  --head-bg1:#ffffff;--head-bg2:#fdf6f2;--head-fg:#14171c;--head-dim:#6a7280;--head-line:rgba(20,23,28,.08);
+  --chip:#f1f3f6;--chip-on:#FFF1E9;--brand:#F35803;--brand2:#FC9A2B;
+  --head-bg1:#ffffff;--head-bg2:#FEF7F2;--head-fg:#1B212F;--head-dim:#6B7280;--head-line:rgba(27,33,47,.08);
   --shadow:0 1px 2px rgba(16,24,40,.04),0 8px 24px rgba(16,24,40,.06);
   --r:16px;
 }
 @media (prefers-color-scheme:dark){
-  :root{--bg:#101116;--card:#1a1c22;--fg:#eceef2;--muted:#98a0ad;--line:#292d35;
-  --chip:#23262d;--chip-on:#3b2418;
-  --head-bg1:#131519;--head-bg2:#1c1512;--head-fg:#fff;--head-dim:rgba(255,255,255,.55);--head-line:rgba(255,255,255,.1);
+  :root{--bg:#12161F;--card:#1B212F;--fg:#ECEFF5;--muted:#96A0B0;--line:#2A3242;
+  --chip:#232B3A;--chip-on:#3A2113;
+  --head-bg1:#141A24;--head-bg2:#241A11;--head-fg:#fff;--head-dim:rgba(255,255,255,.55);--head-line:rgba(255,255,255,.1);
   --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35)}
 }
 html,body{margin:0;padding:0}
@@ -38,12 +38,12 @@ body{
   box-shadow:0 1px 0 var(--head-line),0 8px 22px rgba(16,24,40,.05)}
 /* 缓慢扫过的品牌光晕 */
 .topbar:before{content:"";position:absolute;top:-90%;bottom:-90%;left:-12%;right:-12%;pointer-events:none;
-  background:linear-gradient(180deg,transparent 34%,rgba(255,106,61,.09) 45%,rgba(255,150,100,.18) 51%,rgba(255,106,61,.09) 57%,transparent 68%);
+  background:linear-gradient(180deg,transparent 34%,rgba(243,88,3,.08) 45%,rgba(252,154,43,.17) 51%,rgba(243,88,3,.08) 57%,transparent 68%);
   animation:sweep 28s linear infinite}
 @keyframes sweep{0%{transform:translateY(-42%)}100%{transform:translateY(42%)}}
 @media (prefers-reduced-motion:reduce){.topbar:before{animation:none}}
 .topbar:after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;z-index:2;
-  background:linear-gradient(90deg,var(--brand),var(--brand2) 42%,rgba(255,106,61,0) 100%)}
+  background:linear-gradient(90deg,var(--brand),var(--brand2) 42%,rgba(243,88,3,0) 100%)}
 .topbar .wrap{position:relative;z-index:1;text-align:center}
 .logo{height:104px;width:auto;display:block;margin:0 auto}
 .only-dark{display:none}
@@ -75,7 +75,7 @@ textarea{resize:vertical;min-height:62px;line-height:1.5}
   padding:15px 18px;cursor:pointer;transition:.15s;flex:1;min-height:52px;
 }
 .btn:active{transform:scale(.98)}
-.btn.p{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;box-shadow:0 6px 18px rgba(255,106,61,.3);flex:2}
+.btn.p{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;box-shadow:0 6px 18px rgba(243,88,3,.28);flex:2}
 .btn.g{background:var(--chip);color:var(--fg);border:1px solid var(--line)}
 .results{display:flex;flex-direction:column;gap:12px}
 .res{position:relative;padding:16px}
@@ -104,7 +104,7 @@ textarea{resize:vertical;min-height:62px;line-height:1.5}
 .plat em{font-style:normal}
 .plat span{margin-left:auto;font-size:11px;font-weight:400;color:var(--muted);white-space:nowrap}
 .plat.wide{grid-column:1/-1}
-.plat.hot{border-color:var(--brand);background:#fff6f2;box-shadow:0 0 0 2px rgba(255,106,61,.2)}
+.plat.hot{border-color:var(--brand);background:#FFF3EC;box-shadow:0 0 0 2px rgba(243,88,3,.2)}
 .phint{display:none;margin:13px 0 0;background:var(--chip);border-radius:12px;padding:13px 15px}
 .phint.on{display:block}
 .phint b{display:block;font-size:13px;color:var(--brand);margin-bottom:7px}
