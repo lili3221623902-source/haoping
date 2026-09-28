@@ -84,8 +84,10 @@ textarea{resize:vertical;min-height:62px;line-height:1.5}
 .plat em{font-style:normal}
 .plat span{margin-left:auto;font-size:11px;font-weight:400;color:var(--muted);white-space:nowrap}
 .plat.wide{grid-column:1/-1}
-.phint{display:none;font-size:12.5px;color:var(--muted);margin:12px 0 0;line-height:1.8}
+.phint{display:none;margin:13px 0 0;background:var(--chip);border-radius:12px;padding:13px 15px}
 .phint.on{display:block}
+.phint b{display:block;font-size:13px;color:var(--brand);margin-bottom:7px}
+.phint span{display:block;font-size:13px;color:var(--muted);line-height:1.95}
 #toast{
   position:fixed;left:50%;bottom:calc(30px + env(safe-area-inset-bottom));transform:translate(-50%,16px);
   background:rgba(20,22,26,.92);color:#fff;padding:11px 20px;border-radius:999px;font-size:14px;
@@ -439,7 +441,16 @@ function renderPlats(){
       toast(msg+' · 到评价框长按粘贴');
       var hint=$('#phint');
       if(hint){
-        if(p.order){hint.textContent='没看到写评价的地方？打开 App →「我的」→「待评价」→ 选本店订单，再长按粘贴。'}
+        hint.innerHTML='';
+        if(p.order){
+          var t=document.createElement('b');t.textContent='没看到写评价的地方？照这三步走';
+          hint.appendChild(t);
+          ['① 打开'+p.name+' App，点右下角「我的」',
+           '② 点「待评价」，找到本店的订单',
+           '③ 点「评价」，在输入框长按 → 粘贴，发出去'].forEach(function(s){
+            var e=document.createElement('span');e.textContent=s;hint.appendChild(e);
+          });
+        }
         hint.classList.toggle('on',!!p.order);
       }
     };
