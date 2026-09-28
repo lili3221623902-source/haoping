@@ -137,11 +137,6 @@ textarea{resize:vertical;min-height:62px;line-height:1.5}
     </div>
 
     <div class="row">
-      <div class="lab">行业类型</div>
-      <div class="chips" id="cats"></div>
-    </div>
-
-    <div class="row">
       <div class="lab">这次的服务项目 <span class="opt">可多选</span></div>
       <div class="chips" id="items"></div>
     </div>
@@ -370,9 +365,6 @@ function catTags(key){
   return out;
 }
 function renderChips(){
-  chipRow($('#cats'),Object.keys(CATS).map(function(k){return {k:k,label:CATS[k].label}}),
-    function(it){return cfg.cat===it.k},
-    function(it){cfg.cat=it.k;cfg.tags=CATS[it.k].def.slice();persist();});
   chipRow($('#items'),ITEMS.map(function(k){return {k:k,label:k}}),
     function(it){return cfg.items.indexOf(it.k)>=0},
     function(it){var i=cfg.items.indexOf(it.k);if(i<0)cfg.items.push(it.k);else cfg.items.splice(i,1);persist();});
