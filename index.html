@@ -84,7 +84,6 @@ textarea{resize:vertical;min-height:62px;line-height:1.5}
 .plat em{font-style:normal}
 .plat span{margin-left:auto;font-size:11px;font-weight:400;color:var(--muted);white-space:nowrap}
 .plat.wide{grid-column:1/-1}
-.pnote{font-size:12.5px;color:var(--muted);margin:13px 0 0;line-height:1.85}
 #toast{
   position:fixed;left:50%;bottom:calc(30px + env(safe-area-inset-bottom));transform:translate(-50%,16px);
   background:rgba(20,22,26,.92);color:#fff;padding:11px 20px;border-radius:999px;font-size:14px;
@@ -156,14 +155,12 @@ textarea{resize:vertical;min-height:62px;line-height:1.5}
       高德 / 百度地图：搜到本店 → 分享 → 复制链接
   -->
   <div class="card">
-    <div class="lab" style="margin-bottom:14px">下一步：去平台发布</div>
+    <div class="lab" style="margin-bottom:13px">下一步：去平台发布</div>
     <ol class="steps">
-      <li>先点结果卡片上的<b>复制</b></li>
-      <li>再点下面要去的平台（<b>会自动帮你复制一次</b>）</li>
+      <li>选一条<b>复制</b>（点平台也会自动帮你复制）</li>
       <li>到评价框<b>长按 → 粘贴</b>，发出去</li>
     </ol>
     <div class="plats" id="plats"></div>
-    <p class="pnote" id="pnote"></p>
   </div>
 
   <div class="tip">
@@ -413,18 +410,15 @@ function shopName(){return ($('#name').value||'').trim()||SHOP_NAME}
 function renderPlats(){
   var box=$('#plats');if(!box)return;
   box.innerHTML='';
-  var direct=0;
   PLATFORMS.forEach(function(p){
     var link=(p.link||'').trim();
     if(!link&&!p.search&&!p.home)return;
-    if(link)direct++;
     var b=document.createElement('button');
     b.type='button';b.className='plat';
     var d=document.createElement('i');d.style.background=p.color;
     var n=document.createElement('em');n.textContent=p.name;
-    var g=document.createElement('span');
-    g.textContent=link?'直达本店 →':'搜本店 →';
-    b.appendChild(d);b.appendChild(n);b.appendChild(g);
+    b.appendChild(d);b.appendChild(n);
+    if(link){var g=document.createElement('span');g.textContent='本店 →';b.appendChild(g)}
     b.onclick=function(){
       var t=lastCopied||shown[0]||'';
       if(t)copySync(t);
@@ -443,9 +437,6 @@ function renderPlats(){
     };
     box.appendChild(b);
   });
-  $('#pnote').textContent=direct
-    ?'点任一个平台都会先自动复制文案：标「直达本店」的直接进本店，其他会打开该平台搜本店。到评价框长按粘贴就能发布。'
-    :'点平台会先自动复制文案，再打开该平台的「搜本店」页；进店后在评价框长按粘贴就能发布。'
     }
 function render(){
   save();
