@@ -149,12 +149,11 @@ textarea{resize:vertical;min-height:62px;line-height:1.5}
 
   <!--
     ============ 门店平台链接（老板填这里） ============
-    把每个平台的【本店】链接粘到下面 script 里 PLATFORMS 的 link:'' 引号内，
-    留空的平台不会显示给客户。
+    有【本店】链接就粘到下面 script 里 PLATFORMS 的 link:'' 引号内 → 客户一键直达本店；
+    link 留空也能用：会打开该平台的「搜索本店」页（用客户填的门店名去搜）。
       大众点评 / 美团：进店铺主页 → 分享 → 复制链接
       抖音：团购或门店页 → 分享 → 复制链接
       高德 / 百度地图：搜到本店 → 分享 → 复制链接
-    填好保存就生效，客户点按钮会自动复制文案并跳转过去。
   -->
   <div class="card">
     <div class="lab" style="margin-bottom:14px">下一步：去平台发布</div>
@@ -176,17 +175,25 @@ textarea{resize:vertical;min-height:62px;line-height:1.5}
 
 <script>
 /* ================== 门店配置：老板只改这里 ==================
-   SHOP_NAME  = 门店名（客户没填"店铺/商品名称"时，"复制店名"用的就是它）
-   PLATFORMS  = 各平台的本店链接；link 留空 = 该平台不显示给客户
+   SHOP_NAME = 门店名（客户没填"店铺/商品名称"时，搜索本店用的就是它）
+   PLATFORMS：
+     link   = 本店链接，填了就一键直达本店（留空则打开该平台搜本店）
+     search = 搜索页模板，{kw} 会被替换成门店名，一般不用改
    ========================================================== */
 var SHOP_NAME='';
 var PLATFORMS=[
-  {name:'大众点评',color:'#FF6633',link:''},
-  {name:'美团',    color:'#FFC300',link:''},
-  {name:'抖音',    color:'#FE2C55',link:''},
-  {name:'高德地图',color:'#1677FF',link:''},
-  {name:'百度地图',color:'#2932E1',link:''},
-  {name:'小红书',  color:'#FF2442',link:''}
+  {name:'大众点评',color:'#FF6633',link:'',home:'https://m.dianping.com/',
+   search:'https://www.dianping.com/search/keyword/1/0_{kw}'},
+  {name:'美团',    color:'#FFC300',link:'',home:'https://i.meituan.com/',
+   search:'https://i.meituan.com/s/{kw}'},
+  {name:'抖音',    color:'#FE2C55',link:'',home:'https://www.douyin.com/',
+   search:'https://www.douyin.com/search/{kw}'},
+  {name:'高德地图',color:'#1677FF',link:'',home:'https://www.amap.com/',
+   search:'https://uri.amap.com/search?keyword={kw}&view=map'},
+  {name:'百度地图',color:'#2932E1',link:'',home:'https://map.baidu.com/',
+   search:'https://map.baidu.com/mobile/webapp/search/search/qt=s&wd={kw}'},
+  {name:'小红书',  color:'#FF2442',link:'',home:'https://www.xiaohongshu.com/',
+   search:'https://www.xiaohongshu.com/search_result?keyword={kw}'}
 ];
 
 /* ---------- 数据：标签（= 句子维度） ---------- */
@@ -406,40 +413,40 @@ function shopName(){return ($('#name').value||'').trim()||SHOP_NAME}
 function renderPlats(){
   var box=$('#plats');if(!box)return;
   box.innerHTML='';
-  var list=PLATFORMS.filter(function(p){return (p.link||'').trim()});
-  if(!list.length){
-    var b=document.createElement('button');
-    b.type='button';b.className='plat wide';
-    var d=document.createElement('i');d.style.background='#8a8f98';
-    var n=document.createElement('em');n.textContent='复制店名';
-    var g=document.createElement('span');g.textContent='去 App 搜索本店 →';
-    b.appendChild(d);b.appendChild(n);b.appendChild(g);
-    b.onclick=function(){
-      var nm=shopName();
-      if(!nm){toast('上面先填一下门店名称');return}
-      copySync(nm);toast('店名已复制，去 App 里搜一下本店');
-    };
-    box.appendChild(b);
-    $('#pnote').textContent='复制店名后，打开大众点评 / 美团 / 抖音 / 高德地图搜索本店，在评价框长按粘贴即可发布。';
-    return;
-  }
-  list.forEach(function(p){
+  var direct=0;
+  PLATFORMS.forEach(function(p){
+    var link=(p.link||'').trim();
+    if(!link&&!p.search&&!p.home)return;
+    if(link)direct++;
     var b=document.createElement('button');
     b.type='button';b.className='plat';
     var d=document.createElement('i');d.style.background=p.color;
     var n=document.createElement('em');n.textContent=p.name;
-    var g=document.createElement('span');g.textContent='去评价 →';
+    var g=document.createElement('span');
+    g.textContent=link?'直达本店 →':'搜本店 →';
     b.appendChild(d);b.appendChild(n);b.appendChild(g);
     b.onclick=function(){
       var t=lastCopied||shown[0]||'';
       if(t)copySync(t);
-      window.open(p.link,'_blank','noopener');
-      toast(t?'文案已复制 · 到评价框长按粘贴':'已打开，记得先复制文案');
+      var nm=shopName(),url=link,msg;
+      if(!url&&nm&&p.search){
+        url=p.search.replace('{kw}',encodeURIComponent(nm));
+        msg=(t?'文案已复制 · ':'')+'去'+p.name+'搜「'+nm+'」';
+      }else if(!url){
+        url=p.home||'';
+        msg=(t?'文案已复制 · ':'')+'去'+p.name+'搜一下本店'+(nm?'':'（上面先填下门店名）');
+      }else{
+        msg=(t?'文案已复制 · ':'')+'正在打开本店';
+      }
+      if(url)window.open(url,'_blank','noopener');
+      toast(msg+' · 到评价框长按粘贴');
     };
     box.appendChild(b);
   });
-  $('#pnote').textContent='点平台会先帮你复制一次文案，到评价框长按粘贴就能发布。';
-}
+  $('#pnote').textContent=direct
+    ?'点任一个平台都会先自动复制文案：标「直达本店」的直接进本店，其他会打开该平台搜本店。到评价框长按粘贴就能发布。'
+    :'点平台会先自动复制文案，再打开该平台的「搜本店」页；进店后在评价框长按粘贴就能发布。'
+    }
 function render(){
   save();
   var texts=[],i;
