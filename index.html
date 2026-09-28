@@ -3,21 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#ff6a3d">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#131519" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>口碑文案助手</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>">
+<title>好惠修 · 口碑文案助手</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%2314171c'/><text x='32' y='45' font-size='38' font-weight='bold' text-anchor='middle' fill='%23ff6a3d' font-family='PingFang SC,sans-serif'>好</text></svg>">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
   --bg:#f5f6f8;--card:#fff;--fg:#1a1c20;--muted:#6b7280;--line:#e6e8ec;
   --chip:#f1f3f6;--chip-on:#fff0ea;--brand:#ff6a3d;--brand2:#ff9166;
+  --head-bg1:#ffffff;--head-bg2:#fdf6f2;--head-fg:#14171c;--head-dim:#6a7280;--head-line:rgba(20,23,28,.08);
   --shadow:0 1px 2px rgba(16,24,40,.04),0 8px 24px rgba(16,24,40,.06);
   --r:16px;
 }
 @media (prefers-color-scheme:dark){
   :root{--bg:#101116;--card:#1a1c22;--fg:#eceef2;--muted:#98a0ad;--line:#292d35;
-  --chip:#23262d;--chip-on:#3b2418;--shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35)}
+  --chip:#23262d;--chip-on:#3b2418;
+  --head-bg1:#131519;--head-bg2:#1c1512;--head-fg:#fff;--head-dim:rgba(255,255,255,.55);--head-line:rgba(255,255,255,.1);
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35)}
 }
 html,body{margin:0;padding:0}
 body{
@@ -27,9 +31,25 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 .wrap{max-width:660px;margin:0 auto;padding:0 14px}
-header{padding:26px 0 14px;text-align:center}
-header h1{margin:0;font-size:23px;letter-spacing:.5px}
-header p{margin:6px 0 0;color:var(--muted);font-size:13px}
+/* 顶栏 */
+.topbar{position:relative;overflow:hidden;color:var(--head-fg);
+  background:linear-gradient(170deg,var(--head-bg1) 0%,var(--head-bg2) 100%);
+  padding:calc(16px + env(safe-area-inset-top)) 0 18px;
+  box-shadow:0 1px 0 var(--head-line),0 8px 22px rgba(16,24,40,.05)}
+/* 缓慢扫过的品牌光晕 */
+.topbar:before{content:"";position:absolute;top:-90%;bottom:-90%;left:-12%;right:-12%;pointer-events:none;
+  background:linear-gradient(180deg,transparent 34%,rgba(255,106,61,.09) 45%,rgba(255,150,100,.18) 51%,rgba(255,106,61,.09) 57%,transparent 68%);
+  animation:sweep 28s linear infinite}
+@keyframes sweep{0%{transform:translateY(-42%)}100%{transform:translateY(42%)}}
+@media (prefers-reduced-motion:reduce){.topbar:before{animation:none}}
+.topbar:after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;z-index:2;
+  background:linear-gradient(90deg,var(--brand),var(--brand2) 42%,rgba(255,106,61,0) 100%)}
+.topbar .wrap{position:relative;z-index:1;text-align:center}
+.logo{height:104px;width:auto;display:block;margin:0 auto}
+.only-dark{display:none}
+@media (prefers-color-scheme:dark){.only-light{display:none}.only-dark{display:block}}
+.brandname{display:block;margin-top:12px;font-size:19px;font-weight:600;letter-spacing:.4px}
+.tagline{display:block;margin-top:5px;font-size:12px;color:var(--head-dim);letter-spacing:.7px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
 .row{margin-bottom:16px}
 .row:last-child{margin-bottom:0}
@@ -99,11 +119,15 @@ textarea{resize:vertical;min-height:62px;line-height:1.5}
 </style>
 </head>
 <body>
+<div class="topbar">
+  <div class="wrap">
+    <img class="logo only-light" src="assets/logo-on-light.png" alt="好惠修 家庭维修">
+    <img class="logo only-dark" src="assets/logo-on-dark.png" alt="好惠修 家庭维修">
+    <span class="brandname">口碑文案助手</span>
+    <span class="tagline">上门维修 · 顾客评价</span>
+  </div>
+</div>
 <div class="wrap">
-  <header>
-    <h1>口碑文案助手</h1>
-    <p>选好标签，一键生成自然的客户评价文案</p>
-  </header>
 
   <div class="card">
     <div class="row">
