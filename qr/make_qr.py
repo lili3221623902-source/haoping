@@ -4,6 +4,7 @@ import segno
 from PIL import Image, ImageDraw, ImageFont
 
 URL = "https://lili3221623902-source.github.io/koubei/"
+SHOP = "好惠修 家庭维修"
 BRAND = (255, 106, 61)
 DARK = (28, 30, 34)
 GREY = (124, 130, 140)
@@ -28,13 +29,14 @@ def center(text, y, font, fill):
 
 # 顶部品牌条
 d.rectangle([0, 0, W, 14], fill=BRAND)
-center("口碑文案助手", 118, f(76, 4), DARK)
-center("扫码，一分钟写好一条走心的顾客评价", 232, f(34, 0), GREY)
+center(SHOP, 92, f(30, 1), BRAND)
+center("口碑文案助手", 146, f(76, 4), DARK)
+center("扫码，一分钟写好一条走心的顾客评价", 262, f(34, 0), GREY)
 
 # 二维码（模块对齐整数，保证清晰）
 MOD, QUIET = 12, 3            # 每个模块像素、静默区模块数
 side = (n + QUIET * 2) * MOD
-x0, y0 = (W - side) // 2, 420
+x0, y0 = (W - side) // 2, 440
 d.rounded_rectangle([x0 - 26, y0 - 26, x0 + side + 26, y0 + side + 26], 26, outline=LINE, width=3)
 for r, row in enumerate(matrix):
     for c, v in enumerate(row):
@@ -70,16 +72,19 @@ S = 1080
 sq = Image.new("RGB", (S, S), "white")
 sd = ImageDraw.Draw(sq)
 sd.rectangle([0, 0, S, 12], fill=BRAND)
+sf = f(24, 1)
+box = sd.textbbox((0, 0), SHOP, font=sf)
+sd.text(((S - (box[2] - box[0])) / 2, 56), SHOP, font=sf, fill=BRAND)
 tf = f(58, 4)
 box = sd.textbbox((0, 0), "口碑文案助手", font=tf)
-sd.text(((S - (box[2] - box[0])) / 2, 66), "口碑文案助手", font=tf, fill=DARK)
+sd.text(((S - (box[2] - box[0])) / 2, 104), "口碑文案助手", font=tf, fill=DARK)
 sub = pif = f(26, 0)
 box = sd.textbbox((0, 0), "扫码写评价 · 一分钟搞定", font=sub)
-sd.text(((S - (box[2] - box[0])) / 2, 146), "扫码写评价 · 一分钟搞定", font=sub, fill=GREY)
+sd.text(((S - (box[2] - box[0])) / 2, 184), "扫码写评价 · 一分钟搞定", font=sub, fill=GREY)
 MOD2 = 15
 side2 = (n + 6) * MOD2
 sx = (S - side2) // 2
-sy = 226
+sy = 258
 for r, row in enumerate(matrix):
     for c, v in enumerate(row):
         if v:

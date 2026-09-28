@@ -84,6 +84,8 @@ textarea{resize:vertical;min-height:62px;line-height:1.5}
 .plat em{font-style:normal}
 .plat span{margin-left:auto;font-size:11px;font-weight:400;color:var(--muted);white-space:nowrap}
 .plat.wide{grid-column:1/-1}
+.phint{display:none;font-size:12.5px;color:var(--muted);margin:12px 0 0;line-height:1.8}
+.phint.on{display:block}
 #toast{
   position:fixed;left:50%;bottom:calc(30px + env(safe-area-inset-bottom));transform:translate(-50%,16px);
   background:rgba(20,22,26,.92);color:#fff;padding:11px 20px;border-radius:999px;font-size:14px;
@@ -161,6 +163,7 @@ textarea{resize:vertical;min-height:62px;line-height:1.5}
       <li>到评价框<b>长按 → 粘贴</b>，发出去</li>
     </ol>
     <div class="plats" id="plats"></div>
+    <p class="phint" id="phint"></p>
   </div>
 
   <div class="tip">
@@ -179,9 +182,9 @@ textarea{resize:vertical;min-height:62px;line-height:1.5}
    ========================================================== */
 var SHOP_NAME='好惠修 家庭维修';
 var PLATFORMS=[
-  {name:'大众点评',color:'#FF6633',link:'',home:'https://m.dianping.com/',
+  {name:'大众点评',color:'#FF6633',link:'',order:1,home:'https://m.dianping.com/',
    search:'https://www.dianping.com/search/keyword/1/0_{kw}'},
-  {name:'美团',    color:'#FFC300',link:'https://dpurl.cn/UHpLYdqz',home:'https://i.meituan.com/',
+  {name:'美团',    color:'#FFC300',link:'https://dpurl.cn/UHpLYdqz',order:1,home:'https://i.meituan.com/',
    search:'https://i.meituan.com/s/{kw}'},
   {name:'抖音',    color:'#FE2C55',link:'',home:'https://www.douyin.com/',
    search:'https://www.douyin.com/search/{kw}'},
@@ -434,6 +437,11 @@ function renderPlats(){
       }
       if(url)window.open(url,'_blank','noopener');
       toast(msg+' · 到评价框长按粘贴');
+      var hint=$('#phint');
+      if(hint){
+        if(p.order){hint.textContent='没看到写评价的地方？打开 App →「我的」→「待评价」→ 选本店订单，再长按粘贴。'}
+        hint.classList.toggle('on',!!p.order);
+      }
     };
     box.appendChild(b);
   });
