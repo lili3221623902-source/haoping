@@ -183,6 +183,9 @@ textarea{resize:vertical;min-height:62px;line-height:1.5}
      search = 搜索页模板，{kw} 会被替换成门店名，一般不用改
    ========================================================== */
 var SHOP_NAME='好惠修 家庭维修';
+/* 微信小程序入口：微信里扫出来的「#小程序://...」口令，原样粘到这里。
+   客户点「微信里打开美团」会把这条口令复制走，粘到微信聊天框点亮即可进美团小程序。 */
+var WX_MP='#小程序://美团丨外卖团购特价美食酒店电影/8voPMxBGRu6OMi';
 var PLATFORMS=[
   {name:'大众点评',color:'#FF6633',link:'',order:1,home:'https://m.dianping.com/',
    search:'https://www.dianping.com/search/keyword/1/0_{kw}'},
@@ -412,6 +415,14 @@ function copySync(text){
   return ok;
 }
 function shopName(){return ($('#name').value||'').trim()||SHOP_NAME}
+function showHint(title,lines){
+  var h=$('#phint');if(!h)return;
+  h.innerHTML='';
+  var t=document.createElement('b');t.textContent=title;h.appendChild(t);
+  lines.forEach(function(s){var e=document.createElement('span');e.textContent=s;h.appendChild(e)});
+  h.classList.add('on');
+}
+function hideHint(){var h=$('#phint');if(h)h.classList.remove('on')}
 function renderPlats(){
   var box=$('#plats');if(!box)return;
   box.innerHTML='';
@@ -441,22 +452,33 @@ function renderPlats(){
       toast(msg+' · 到评价框长按粘贴');
       var hint=$('#phint');
       if(hint){
-        hint.innerHTML='';
-        if(p.order){
-          var t=document.createElement('b');t.textContent='没看到写评价的地方？照这三步走';
-          hint.appendChild(t);
-          ['① 打开'+p.name+' App，点右下角「我的」',
-           '② 点「待评价」，找到本店的订单',
-           '③ 点「评价」，在输入框长按 → 粘贴，发出去'].forEach(function(s){
-            var e=document.createElement('span');e.textContent=s;hint.appendChild(e);
-          });
-        }
-        hint.classList.toggle('on',!!p.order);
+        if(p.order)showHint('没看到写评价的地方？照这三步走',[
+          '① 打开'+p.name+' App，点右下角「我的」',
+          '② 点「待评价」，找到本店的订单',
+          '③ 点「评价」，在输入框长按 → 粘贴，发出去']);
+        else hideHint();
       }
     };
     box.appendChild(b);
   });
-    }
+  if(WX_MP){
+    var w=document.createElement('button');
+    w.type='button';w.className='plat wide wx';
+    var wi=document.createElement('i');wi.style.background='#07C160';
+    var wn=document.createElement('em');wn.textContent='微信里打开美团';
+    var wg=document.createElement('span');wg.textContent='复制口令 →';
+    w.appendChild(wi);w.appendChild(wn);w.appendChild(wg);
+    w.onclick=function(){
+      copySync(WX_MP);
+      toast('口令已复制 · 粘到微信聊天框点开');
+      showHint('微信里打开美团，照这三步走',[
+        '① 把刚复制的口令粘到微信聊天框，点一下进美团',
+        '② 回到本页点结果卡片的「复制」拿文案',
+        '③ 到评价框长按 → 粘贴，发出去']);
+    };
+    box.appendChild(w);
+  }
+}
 function render(){
   save();
   var texts=[],i;
