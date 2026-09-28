@@ -34,7 +34,7 @@ body{
 /* 顶栏 */
 .topbar{position:relative;overflow:hidden;color:var(--head-fg);
   background:linear-gradient(170deg,var(--head-bg1) 0%,var(--head-bg2) 100%);
-  padding:calc(14px + env(safe-area-inset-top)) 0 16px;
+  padding:calc(13px + env(safe-area-inset-top)) 0 15px;
   box-shadow:0 1px 0 var(--head-line),0 8px 22px rgba(16,24,40,.05)}
 /* 缓慢扫过的品牌光晕 */
 .topbar:before{content:"";position:absolute;top:-90%;bottom:-90%;left:-12%;right:-12%;pointer-events:none;
@@ -44,11 +44,15 @@ body{
 @media (prefers-reduced-motion:reduce){.topbar:before{animation:none}}
 .topbar:after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;z-index:2;
   background:linear-gradient(90deg,var(--brand),var(--brand2) 42%,rgba(243,88,3,0) 100%)}
-.topbar .wrap{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:16px}
-.logo{height:92px;width:auto;display:block;flex:0 0 auto}
-.brandtext{text-align:right}
-.brandname{display:block;font-size:18px;font-weight:600;letter-spacing:.4px;line-height:1.3}
-.tagline{display:block;margin-top:5px;font-size:11.5px;color:var(--head-dim);letter-spacing:.7px}
+.topbar .wrap{position:relative;z-index:1}
+.logo{height:76px;width:auto;display:block;position:relative;z-index:2}
+/* 右侧装饰：品牌光晕 + 两道细弧（纯装饰，无文字） */
+.topbar .wrap:after{content:"";position:absolute;right:-16px;top:50%;width:200px;height:200px;margin-top:-100px;
+  border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle at 62% 50%,rgba(243,88,3,.17),rgba(243,88,3,.05) 46%,transparent 72%)}
+.topbar .wrap:before{content:"";position:absolute;right:-34px;top:50%;width:236px;height:236px;margin-top:-118px;
+  border:1.5px solid rgba(243,88,3,.16);border-left-color:transparent;border-bottom-color:transparent;
+  border-radius:50%;pointer-events:none}
 .only-dark{display:none}
 @media (prefers-color-scheme:dark){.only-light{display:none}.only-dark{display:block}}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
@@ -90,7 +94,6 @@ textarea{resize:vertical;min-height:62px;line-height:1.5}
 .cp:active{background:var(--chip-on)}
 .cp.done{background:var(--brand);color:#fff;border-color:var(--brand)}
 .empty{color:var(--muted);text-align:center;padding:26px 10px;font-size:14px;line-height:1.9}
-.tip{color:var(--muted);font-size:12.5px;text-align:center;line-height:1.9;padding:4px 10px 22px}
 /* 去平台发布 */
 .steps{margin:0 0 15px;padding-left:19px;color:var(--muted);font-size:13px;line-height:2}
 .steps b{color:var(--fg);font-weight:600}
@@ -124,10 +127,6 @@ textarea{resize:vertical;min-height:62px;line-height:1.5}
   <div class="wrap">
     <img class="logo only-light" src="assets/logo-on-light.png" alt="好惠修 家庭维修">
     <img class="logo only-dark" src="assets/logo-on-dark.png" alt="好惠修 家庭维修">
-    <div class="brandtext">
-      <span class="brandname">口碑文案助手</span>
-      <span class="tagline">上门维修 · 顾客评价</span>
-    </div>
   </div>
 </div>
 <div class="wrap">
@@ -135,7 +134,7 @@ textarea{resize:vertical;min-height:62px;line-height:1.5}
   <div class="card">
     <div class="row">
       <div class="lab">店铺 / 商品名称 <span class="opt">选填</span></div>
-      <input type="text" id="name" placeholder="例如：XX火锅（中山路店）" autocomplete="off">
+      <input type="text" id="name" placeholder="例如：好惠修 家庭维修" autocomplete="off">
     </div>
 
     <div class="row">
@@ -175,7 +174,7 @@ textarea{resize:vertical;min-height:62px;line-height:1.5}
   </div>
 
   <div class="results" id="out">
-    <div class="card empty" id="empty">点「生成文案」，立刻出 3 条候选 👆</div>
+    <div class="card empty" id="empty">点「生成文案」</div>
   </div>
 
   <!--
@@ -196,10 +195,6 @@ textarea{resize:vertical;min-height:62px;line-height:1.5}
     <p class="phint" id="phint"></p>
   </div>
 
-  <div class="tip">
-    生成的文案可自由修改 · 加上自己的真实细节会更自然<br>
-    把链接发到微信 / 群聊 / 打印成二维码，别人用手机也能直接打开
-  </div>
 </div>
 <div id="toast">已复制</div>
 
