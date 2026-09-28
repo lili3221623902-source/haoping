@@ -84,6 +84,7 @@ textarea{resize:vertical;min-height:62px;line-height:1.5}
 .plat em{font-style:normal}
 .plat span{margin-left:auto;font-size:11px;font-weight:400;color:var(--muted);white-space:nowrap}
 .plat.wide{grid-column:1/-1}
+.plat.hot{border-color:var(--brand);background:#fff6f2;box-shadow:0 0 0 2px rgba(255,106,61,.2)}
 .phint{display:none;margin:13px 0 0;background:var(--chip);border-radius:12px;padding:13px 15px}
 .phint.on{display:block}
 .phint b{display:block;font-size:13px;color:var(--brand);margin-bottom:7px}
@@ -463,7 +464,14 @@ function renderPlats(){
       if(!url&&p.scheme&&inWeChat()){
         toast('微信里打不开 App · 点右上角「在浏览器打开」再用');
         showHint('微信里点不动 App，多一步就好',
-          ['① 点右上角「…」→「在浏览器打开」','② 回到本页再点一次「'+p.name+'」','③ 打开订单后点「评价」，长按粘贴']);
+          ['① 点右上角「…」→「在浏览器打开」，再点一次「'+p.name+'」',
+           '② 或者用下面高亮的「微信里打开美团」，复制口令粘到聊天框点亮',
+           '③ 打开订单后点「评价」，长按粘贴']);
+        var wb=window.__wxBtn;
+        if(wb){
+          wb.classList.add('hot');
+          try{wb.scrollIntoView({block:'center',behavior:'smooth'})}catch(e){wb.scrollIntoView()}
+        }
         return;
       }
       if(!url&&nm&&p.search){
@@ -496,6 +504,7 @@ function renderPlats(){
     var wg=document.createElement('span');wg.textContent='复制口令 →';
     w.appendChild(wi);w.appendChild(wn);w.appendChild(wg);
     w.onclick=function(){
+      w.classList.remove('hot');
       copySync(WX_MP);
       toast('口令已复制 · 粘到微信聊天框点开');
       showHint('微信里打开美团，照这三步走',[
@@ -504,6 +513,7 @@ function renderPlats(){
         '③ 到评价框长按 → 粘贴，发出去']);
     };
     box.appendChild(w);
+    window.__wxBtn=w;
   }
 }
 function render(){
